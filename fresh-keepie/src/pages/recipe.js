@@ -1,10 +1,10 @@
 import React from "react";
-function Home() {
+function Recipe() {
     return (
         <div>
-            <h1>Page Home</h1>
+            <h1>Page Recipe</h1>
         </div>
     );
 }
 
-export default Home;
+export default Recipe;
