@@ -5,6 +5,8 @@ import Community from "./pages/community";
 import MyPage from "./pages/myPage";
 import Shopping from "./pages/shopping";
 import Start from "./pages/start";
+import Login from "./pages/login";
+
 
 import React, { useState } from "react";
 import "./assets/fonts/fonts.css";
@@ -32,6 +34,8 @@ function App() {
                             <Route path="/community" element={<Community />} />
                             <Route path="/mypage" element={<MyPage />} />
                             <Route path="/start" element={<Start />} />
+                            <Route path="/login" element={<Login />} />
+
 
                         </Routes>
                     
