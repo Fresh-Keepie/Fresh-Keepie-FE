@@ -6,6 +6,8 @@ import MyPage from "./pages/myPage";
 import Shopping from "./pages/shopping";
 import Start from "./pages/start";
 import Login from "./pages/login";
+import Signup from "./pages/signup";
+
 
 
 import React, { useState } from "react";
@@ -35,6 +37,8 @@ function App() {
                             <Route path="/mypage" element={<MyPage />} />
                             <Route path="/start" element={<Start />} />
                             <Route path="/login" element={<Login />} />
+                            <Route path="/signup" element={<Signup />} />
+
 
 
                         </Routes>

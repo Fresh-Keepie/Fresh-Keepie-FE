@@ -2,12 +2,7 @@ import React, {useState} from 'react'
 import "../assets/fonts/fonts.css";
 import mainLogo from "../assets/images/mainLogo.png";
 import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-    NavLink,
-    Link,
-} from "react-router-dom"; //npm install react-router-dom
+    BrowserRouter as Router,Routes,Route,NavLink, Link,} from "react-router-dom"; //npm install react-router-dom
 
 const appContainerStyle = {
     //전체 컨테이너 스타일

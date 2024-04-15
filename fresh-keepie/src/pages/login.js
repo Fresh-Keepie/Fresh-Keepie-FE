@@ -133,7 +133,7 @@ const [identifier, setIdentifier] = useState('');
 
     // 이메일 또는 아이디와 비밀번호가 일치하면 로그인 성공
     if (identifier === correctIdentifier && password === correctPassword) {
-      navigate('/register_profile');
+      navigate('/');
       console.log('로그인 성공');
     }
   };
