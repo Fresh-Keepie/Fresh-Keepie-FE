@@ -68,7 +68,7 @@ const Pwcheck = ()=> {
 
     const handlePwcheck = (e) => {
         e.preventDefault();
-        navigate('/');}
+        navigate('/home');}
 
   return (
     <Layout>

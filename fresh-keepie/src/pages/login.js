@@ -90,7 +90,7 @@ position: absolute; /* 텍스트의 위치를 조정하기 위해 필요 */
 top: 50%; /* 이미지의 중앙에 텍스트를 위치시킵니다. */
 left: 50%;
 transform: translate(-50%, -50%); /* 텍스트를 수평 및 수직 중앙으로 이동시킵니다. */
-color: white;; /* 텍스트 색상 설정 */
+color: white; /* 텍스트 색상 설정 */
 font-size : 20px;
 font-family : Potta One;
 font-weight : 400px;
@@ -133,7 +133,7 @@ const [identifier, setIdentifier] = useState('');
 
     // 이메일 또는 아이디와 비밀번호가 일치하면 로그인 성공
     if (identifier === correctIdentifier && password === correctPassword) {
-      navigate('/');
+      navigate('/home');
       console.log('로그인 성공');
     }
   };

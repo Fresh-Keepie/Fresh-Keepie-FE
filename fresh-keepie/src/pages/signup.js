@@ -99,7 +99,7 @@ const Signup = () => {
     } else {
       setError('');
       setIsRegistered(true);
-      navigate('/');
+      navigate('/login');
       console.log('회원가입 성공');
       
     }

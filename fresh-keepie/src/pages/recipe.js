@@ -1,9 +1,20 @@
 import React from "react";
+import styled from 'styled-components'
+import Topbar from "../components/Topbar";
+
+const Layout=styled.div`
+display : flex;
+flex-direction : column;
+justify-content :center;
+align-items: center;
+`
+
 function Recipe() {
     return (
-        <div>
-            <h1>Page Recipe</h1>
-        </div>
+        <Layout>
+        <Topbar />
+        </Layout>
+        
     );
 }
 
