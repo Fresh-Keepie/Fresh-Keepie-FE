@@ -7,6 +7,8 @@ import Shopping from "./pages/shopping";
 import Start from "./pages/start";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
+import Pwcheck from "./pages/pwcheck";
+
 
 
 
@@ -38,6 +40,7 @@ function App() {
                             <Route path="/start" element={<Start />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/signup" element={<Signup />} />
+                            <Route path="/pwcheck" element={<Pwcheck />} />
 
 
 
