@@ -3,15 +3,23 @@ import styled from 'styled-components'
 import Topbar from "../components/Topbar";
 
 const PageWrapper=styled.div`
+display : flex;
+flex-direction : column;
+justify-content :center;
+align-items: center;
 `
 const Layout = styled.div`
+display : flex;
 
-    width: "100%";
-    height: "100%";
+justify-content :center;
+align-items: center;
+
+    width: 100%;
+    height: 100%;
     minWidth: 1200;
     margin-top: 100px;
     minHeight: 700;
-    border: "solid 1px"; //메인 콘텐츠 컨테이너 크기 표기용, 실제 디자인 X
+    border: 1px black solid; //메인 콘텐츠 컨테이너 크기 표기용, 실제 디자인 X
 `
 function Home() {
     return (

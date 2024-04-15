@@ -7,7 +7,7 @@ import {
 const appContainerStyle = {
     //전체 컨테이너 스타일
     width: "95%",
-    position: "absolute",
+    //position: "absolute",
     alignItems: "center",
     padding: "2.5%",
 };
