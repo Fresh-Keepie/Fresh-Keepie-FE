@@ -45,7 +45,7 @@ function TopMenu() {
                     }}
                     className="topMenuClass">
                     <li>
-                        <NavLink to="/">
+                        <NavLink to="/home">
                             <MenuContent title="HOME" />
                         </NavLink>
                     </li>
