@@ -1,13 +1,17 @@
-import React, {useState} from 'react'
+import React, { useState } from "react";
 import "../assets/fonts/fonts.css";
 import mainLogo from "../assets/images/mainLogo.png";
 import {
-    BrowserRouter as Router,Routes,Route,NavLink, Link,} from "react-router-dom"; //npm install react-router-dom
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    NavLink,
+    Link,
+} from "react-router-dom"; //npm install react-router-dom
 
 const appContainerStyle = {
     //전체 컨테이너 스타일
     width: "95%",
-    //position: "absolute",
     alignItems: "center",
     padding: "2.5%",
 };
@@ -45,7 +49,7 @@ function TopMenu() {
                     }}
                     className="topMenuClass">
                     <li>
-                        <NavLink to="/">
+                        <NavLink to="/home">
                             <MenuContent title="HOME" />
                         </NavLink>
                     </li>
@@ -110,14 +114,13 @@ const userInfoStyle = {
 export default function Topbar() {
     const [userName, setUserName] = useState("마숭숭"); // 추후에 서버로부터 유저명 받아서 사용
 
-  return (
-    <div style={appContainerStyle}>
-                    <div style={headerContainerStyle}>
-                        <MainLogo />
-                        <TopMenu />
-                        <UserInfo userName={userName} />
-                        </div>
-                        </div>
-    
-  )
+    return (
+        <div style={appContainerStyle}>
+            <div style={headerContainerStyle}>
+                <MainLogo />
+                <TopMenu />
+                <UserInfo userName={userName} />
+            </div>
+        </div>
+    );
 }
