@@ -2,15 +2,18 @@ import React, {useState} from "react";
 import styled from 'styled-components'
 import Topbar from "../components/Topbar";
 import IconSearch from "../assets/images/IconSearch.svg"
-import RecipeLayoutImg from "../assets/images/layout.svg"
+import IconRecipe from "../assets/images/layout.svg"
+import RecipeItem from "../store/dummyFile"
 
 const Layout=styled.div`
 display : flex;
 flex-direction : column;
 justify-content :center;
 align-items: center;
-width : 1440px;
-height : 1080px;
+width : 100%;
+
+
+
 `
 
 const SearchBar =styled.div`
@@ -59,12 +62,50 @@ const SearchImg = styled.img`
    
   `
 
-  const RecipeLayout = styled.img`
-  width : 1339px;
-  height : 760px;
+  const RecipeLayout = styled.div`
+  width : 90%;
+  height : 70vh;
+  background-color: rgba(168, 209, 204, 0.20);
+  border-radius : 50px;
+  display : flex;
+flex-wrap: wrap;
+justify-content: space-between;
   margin-top : 29.6px;
 
   `
+
+const ItemLayout = styled.div`
+width: 378.603px;
+height: 288px;
+border-radius: 30px;
+background: #FFFBFB;
+display : flex;
+justify-content : center;
+flex-direction : column;
+align-items : start;
+margin-top : 20px;
+margin-left : 10px;
+margin-right : 10px;
+box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+//width: calc(25% - 20px);
+`
+
+const RecipeImage=styled.img`
+display : flex;
+justify-content : center;
+align-items : center;
+margin-top : -20px;
+margin-left : 65px;
+`
+
+const RecipeText = styled.span`
+display : flex;
+justify-content : center;
+align-items : center;
+margin-left : 10px;
+margin-top : 20px;
+
+`
 
 function Recipe() {
     const [query, setQuery] = useState('');
@@ -91,7 +132,16 @@ function Recipe() {
                 <SearchImg src = {IconSearch} alt = '검색'/>
             </SearchButton>
         </SearchBar>
-        <RecipeLayout src={RecipeLayoutImg} /> {/* 변경된 부분 */}
+        <RecipeLayout>
+        {RecipeItem.map(recipe => (
+          <ItemLayout key={recipe.id}>
+            <RecipeImage src={recipe.image} alt={`Recipe ${recipe.id}`} />
+            <RecipeText>{recipe.text} </RecipeText>
+            </ItemLayout>
+          
+        ))}
+     </RecipeLayout>
+    
 
         </Layout>
         
