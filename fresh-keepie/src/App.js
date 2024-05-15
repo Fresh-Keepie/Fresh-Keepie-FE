@@ -10,13 +10,7 @@ import Signup from "./pages/signup";
 import Pwcheck from "./pages/pwcheck";
 import React, { useState } from "react";
 import "./assets/fonts/fonts.css";
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-    NavLink,
-    Link,
-} from "react-router-dom"; //npm install react-router-dom
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; //npm install react-router-dom
 
 function App() {
     const [userName, setUserName] = useState("마숭숭"); // 추후에 서버로부터 유저명 받아서 사용
@@ -28,7 +22,7 @@ function App() {
                     <Route path="/home" element={<Home />} />
                     <Route path="/recipe" element={<Recipe />} />
                     <Route path="/shopping" element={<Shopping />} />
-                    <Route path="/community" element={<Community />} />
+                    <Route path="/community/*" element={<Community />} />
                     <Route path="/mypage" element={<MyPage />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
