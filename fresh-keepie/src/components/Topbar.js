@@ -10,6 +10,7 @@ const appContainerStyle = {
     //position: "absolute",
     alignItems: "center",
     padding: "2.5%",
+   
 };
 const headerContainerStyle = {
     //헤더 컨테이너(웹 상단) 스타일

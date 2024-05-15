@@ -1,34 +1,59 @@
 import React from "react";
 import styled from 'styled-components'
 import Topbar from "../components/Topbar";
+import Calendar from "../components/Calendar"
 
-const PageWrapper=styled.div`
+const Layout=styled.div`
 display : flex;
 flex-direction : column;
 justify-content :center;
 align-items: center;
+width : 100%;
+flex-shrink : 0;
 `
-const Layout = styled.div`
+const ContentLayout = styled.div`
 display : flex;
+flex-direction : row;
+margin-top : 31px;
+justify-content : flex-start;
+width : 100%;
+flex-shrink : 0;
 
-justify-content :center;
-align-items: center;
-
-    width: 100%;
-    height: 100%;
-    minWidth: 1200;
-    margin-top: 100px;
-    minHeight: 700;
-    border: 1px black solid; //메인 콘텐츠 컨테이너 크기 표기용, 실제 디자인 X
 `
+const ItemLayout = styled.div`
+width: 60%;
+height: 903px;
+flex-shrink: 0;
+border-radius: 50px;
+background: rgba(168, 209, 204, 0.20);
+margin-left : 20px;
+flex-shrink : 0;
+`
+const DateLayout = styled.div`
+width: 36%;
+height: 903px;
+flex-shrink: 0;
+border-radius: 50px;
+background: #ECF6E8;
+margin-left : 20px;
+`
+
 function Home() {
     return (
-        <PageWrapper>
-            <Topbar/>
-            <Layout>
-               <h1>Page Homes</h1> 
-            </Layout>
-        </PageWrapper>
+    <Layout>
+    <Topbar />
+    <ContentLayout>
+    <ItemLayout>
+        <Calendar />
+
+
+    </ItemLayout>
+    <DateLayout>
+
+    </DateLayout>
+    </ContentLayout>
+
+    </Layout>
             
             
         
