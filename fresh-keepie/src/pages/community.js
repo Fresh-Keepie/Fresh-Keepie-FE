@@ -1,8 +1,12 @@
+//npm install react-icons
+import { FaRegHeart, FaHeart, FaBookmark, FaRegBookmark } from "react-icons/fa";
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import Topbar from "../components/Topbar";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
-const Layout = styled.div`
+import { useUserName } from "./myPage";
+const PageWrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -46,147 +50,501 @@ const DefaultButton = styled.div`
 `;
 
 function Community() {
+    const { userName } = useUserName();
     const navigate = useNavigate();
     const [board, setBoard] = useState("자유 게시판");
+    const [temp, setTemp] = useState("Temp");
+    const [liked, setLiked] = useState(false);
+    const [scraped, setScraped] = useState(false);
     function changeBoard(prop) {
         setBoard(prop);
         navigate("/community");
     }
     //각 게시판 임시 게시글 데이터
-    const freeDummys = Array.from({ length: 679 }).map((_, index, arr) => ({
+    const freeDummys = Array.from({ length: 100 }).map((_, index, arr) => ({
         id: arr.length - index,
         title: `자유 게시판 게시글 ${arr.length - index}`,
         comments: 3,
-        date: "2024-05-13",
+        date: "2024.05.13",
     }));
-    const recipeDummys = Array.from({ length: 543 }).map((_, index, arr) => ({
-        id: arr.length - index,
+    const recipeDummys = Array.from({ length: 200 }).map((_, index, arr) => ({
+        id: arr.length - index + 100,
         title: `레시피 게시판 게시글 ${arr.length - index}`,
         comments: 4,
-        date: "2024-05-13",
+        date: "2024.05.13",
     }));
-    const shareDummys = Array.from({ length: 888 }).map((_, index, arr) => ({
-        id: arr.length - index,
+    const shareDummys = Array.from({ length: 300 }).map((_, index, arr) => ({
+        id: arr.length - index + 300,
         title: `나눔 게시판 게시글 ${arr.length - index}`,
         comments: 7,
-        date: "2024-05-13",
+        date: "2024.05.13",
     }));
-    const POSTS_PER_PAGE = 12;
-    function CommunityWrite() {
-        return (
-            <>
-                <WriteFrame />
-            </>
-        );
-        function WriteFrame() {
-            // 상태 관리를 위한 useState 훅
-            const [postBoard, setPostBoard] = useState(board);
-            const [title, setTitle] = useState("");
-            const [content, setContent] = useState("");
-
-            // 폼 제출 핸들러
-            const handleSubmit = (event) => {
-                event.preventDefault(); // 폼 제출 시 페이지 리로드 방지
-                console.log({ postBoard, title, content });
-                alert(board + "에 게시글이 등록되었습니다.");
-                navigate("/community");
-            };
-            const inputStyle = {
-                marginBottom: 10,
-                fontFamily: "APPLESDGOTHICNEO",
-                border: "1.5px solid",
-                borderColor: "#9c9c9c",
-                borderRadius: 7,
-                backgroundColor: "white",
-                width: "100%",
-                height: 30,
-                padding: 5,
-            };
-            const PostBoardSelect = styled.select`
-                margin-bottom: 10px;
-                font-family: "APPLESDGOTHICNEO";
-                border: 1.5px solid;
-                border-color: #9c9c9c;
-                border-radius: 7px;
-                width: 110px;
-                height: 30px;
-            `;
-            return (
-                <div style={{ fontFamily: "APPLESDGOTHICNEO" }}>
-                    <BoardSelectContainer />
-                    <div style={{ fontSize: 25, fontWeight: 600 }}>
-                        게시글 작성
-                    </div>
-                    <form onSubmit={handleSubmit}>
-                        <PostBoardSelect
-                            value={postBoard}
-                            onChange={(e) => setPostBoard(e.target.value)}>
-                            <option value="자유 게시판">자유 게시판</option>
-                            <option value="레시피 게시판">레시피 게시판</option>
-                            <option value="나눔 게시판">나눔 게시판</option>
-                        </PostBoardSelect>
-                        <div>
-                            <input
-                                type="text"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                style={inputStyle}
-                                placeholder="제목을 입력해주세요."
-                            />
-                        </div>
-                        <div>
-                            <textarea
-                                content={content}
-                                onChange={setContent}
-                                style={{
-                                    ...inputStyle,
-                                    height: 450,
-                                    resize: "none",
-                                }}
-                                placeholder="내용을 입력해주세요."
-                            />
-                        </div>
-                        <div
-                            style={{
-                                width: "100%",
-                                display: "flex",
-                                justifyContent: "flex-end",
-                            }}>
-                            <button
-                                type="submit"
-                                style={{
-                                    width: 70,
-                                    backgroundColor: "transparent",
-                                    border: "none",
-                                }}>
-                                <DefaultButton>등록</DefaultButton>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            );
-        }
-    }
-
+    const POSTS_PER_PAGE = 15;
     return (
         <div>
-            <Layout>
+            <PageWrapper>
                 <Topbar />
+                <BoardSelect />
                 <Routes>
                     <Route
                         path=""
                         element={
                             <>
-                                <BoardSelectContainer />
-                                <BoardContainer />
+                                <PostList />
                             </>
                         }
                     />
-                    <Route path="write" element={<CommunityWrite />} />
+                    <Route
+                        path="write"
+                        element={
+                            <>
+                                <PostWrite />
+                            </>
+                        }
+                    />
+                    <Route
+                        path=":postID"
+                        element={
+                            <>
+                                <PostView />
+                            </>
+                        }
+                    />
                 </Routes>
-            </Layout>
+            </PageWrapper>
         </div>
     );
+    function SearchFrame() {
+        const inputStyle = {
+            fontFamily: "APPLESDGOTHICNEO",
+            border: "1.5px solid",
+            borderColor: "#9c9c9c",
+            borderRadius: 7,
+            backgroundColor: "white",
+            width: "100%",
+            height: 30,
+            padding: 5,
+        };
+        const [searchWord, setSearchWord] = useState("");
+        return (
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginBottom: 4,
+                }}>
+                <input
+                    style={{ ...inputStyle, width: 250, height: 16 }}
+                    type="text"
+                    value={searchWord}
+                    onChange={(e) => setSearchWord(e.target.value)}
+                    placeholder="검색할 제목을 입력해 주세요."
+                />
+                <DefaultButton style={{ width: 50, margin: 3 }}>
+                    검색
+                </DefaultButton>
+            </div>
+        );
+    }
+
+    function PostWrite() {
+        // 상태 관리를 위한 useState 훅
+        const [postBoard, setPostBoard] = useState(board);
+        const [title, setTitle] = useState("");
+        const [content, setContent] = useState("");
+
+        // 폼 제출 핸들러
+        const handleSubmit = (event) => {
+            event.preventDefault();
+            if (title === "" && content === "") {
+                alert("제목과 내용을 입력해주세요.");
+            } else if (title === "") {
+                alert("제목을 입력해주세요.");
+            } else if (content === "") {
+                alert("내용을 입력해주세요.");
+            } else {
+                //여기에 post API 추가
+                console.log({ postBoard, title, content });
+                alert(board + "에 게시글이 등록되었습니다.");
+                navigate("/community");
+                setTemp(content.target.value);
+            }
+        };
+        const inputStyle = {
+            fontFamily: "APPLESDGOTHICNEO",
+            border: "1.5px solid",
+            borderColor: "#9c9c9c",
+            borderRadius: 7,
+            backgroundColor: "white",
+            width: "100%",
+            height: "30px",
+        };
+        const PostBoardSelect = styled.select`
+            font-family: "APPLESDGOTHICNEO";
+            border: 1.5px solid;
+            border-color: #9c9c9c;
+            border-radius: 7px;
+            width: 110px;
+            height: 35px;
+        `;
+        return (
+            <div
+                style={{
+                    fontFamily: "APPLESDGOTHICNEO",
+                    width: "45%",
+                }}>
+                <div style={{ fontSize: 25, fontWeight: 600 }}>게시글 작성</div>
+                <form onSubmit={handleSubmit}>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            width: "100%",
+                        }}>
+                        <div
+                            style={{
+                                width: "100%",
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "flex-end",
+                                alignItems: "center",
+                                marginBottom: 4,
+                            }}>
+                            <PostBoardSelect
+                                value={postBoard}
+                                onChange={(e) => setPostBoard(e.target.value)}>
+                                <option value="자유 게시판">자유 게시판</option>
+                                <option value="레시피 게시판">
+                                    레시피 게시판
+                                </option>
+                                <option value="나눔 게시판">나눔 게시판</option>
+                            </PostBoardSelect>
+
+                            <input
+                                type="text"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                style={{ ...inputStyle, marginLeft: 4 }}
+                                placeholder="제목을 입력해주세요."
+                            />
+                        </div>
+                        <textarea
+                            content={content}
+                            onChange={setContent}
+                            style={{
+                                ...inputStyle,
+                                height: 450,
+                                width: "99%",
+                                resize: "none",
+                            }}
+                            placeholder="내용을 입력해주세요."
+                        />
+                    </div>
+                    <div
+                        style={{
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "flex-end",
+                        }}>
+                        <button
+                            type="submit"
+                            style={{
+                                width: 70,
+                                backgroundColor: "transparent",
+                                border: "none",
+                            }}>
+                            <DefaultButton>등록</DefaultButton>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        );
+    }
+
+    // 게시글 상세 정보 컴포넌트
+    function PostView() {
+        const { postID } = useParams();
+        const [commentContent, setCommentContent] = useState("");
+        const postData = DummyPostDetail(postID);
+        const LikeIcon = postData.postDTO.liked ? FaHeart : FaRegHeart;
+        const ScrapIcon = postData.postDTO.scraped ? FaBookmark : FaRegBookmark;
+        const inputStyle = {
+            fontFamily: "APPLESDGOTHICNEO",
+            border: "1.5px solid",
+            borderColor: "#9c9c9c",
+            borderRadius: 7,
+            backgroundColor: "white",
+            width: "100%",
+            height: 30,
+            padding: 5,
+        };
+
+        const PostContainer = styled.div`
+            width: 100%;
+        `;
+        const PostHeader = styled.div`
+            width: 100%;
+        `;
+        const HeaderInfo = styled.div`
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            border-top: 3px solid #05796b;
+            border-bottom: 1.5px solid #05796b;
+            padding: 10px;
+            padding-left: 25px;
+            padding-right: 25px;
+            font-weight: 600;
+        `;
+        const HeaderInfoContent = styled.div`
+            width: ${(props) => props.width};
+            display: flex;
+            white-space: nowrap;
+            text-overflow: ellipsis; /* 넘친 내용을 생략 부호로 표시 */
+        `;
+        const PostBody = styled.div`
+            padding-top: 25px;
+            padding-bottom: 25px;
+            padding-left: 30px;
+            padding-right: 30px;
+            min-height: 200px;
+            white-space: pre-wrap;
+        `;
+        const ReactionContainer = styled.div`
+            padding-left: 25px;
+            justify-content: flex-end;
+            display: flex;
+            font-size: 14px;
+            font-weight: 600;
+            color: #05796b;
+        `;
+        const CommentContainer = styled.div`
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        `;
+        const CommentHeader = styled.div`
+            align-items: flex-end;
+            padding-left: 25px;
+            padding-right: 25px;
+            text-align: bottom;
+            font-size: 24px;
+            font-weight: 600;
+            border-bottom: 3px solid #05796b;
+            justify-content: space-between;
+            display: flex;
+        `;
+        const CommentBody = styled.div`
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid;
+            padding: 15px;
+            padding-left: 25px;
+            padding-right: 25px;
+        `;
+        const CommentInputContainer = styled.div``;
+        const handleCommentSubmit = (event) => {
+            event.preventDefault();
+            if (commentContent === "") {
+                alert(" 댓글 내용을 입력해주세요.");
+            } else {
+                //여기에 post API 추가
+                console.log({ commentContent });
+                alert("댓글이 등록되었습니다.");
+            }
+        };
+        return (
+            <div
+                style={{
+                    marginBottom: 50,
+                    fontFamily: "APPLESDGOTHICNEO",
+                    flexDirection: "column",
+                    display: "flex",
+                    justifyContent: "center",
+                    width: "53%",
+                    minWidth: 600,
+                }}>
+                {/*PostViewContainer였으나, styled div에서는 입력 업데이트 시 재 렌더링이 안돼서 변경 */}
+                <PostContainer>
+                    <PostHeader>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                paddingLeft: 25,
+                            }}>
+                            <div style={{ fontSize: 15, fontWeight: 600 }}>
+                                {postData.postDTO.board}
+                            </div>
+                            <div style={{ fontSize: 30, fontWeight: 600 }}>
+                                {postData.postDTO.title}
+                            </div>
+                        </div>
+                        <HeaderInfo>
+                            <HeaderInfoContent
+                                width={"20%"}
+                                style={{ fontWeight: 600 }}>
+                                {postData.postDTO.memberID}
+                            </HeaderInfoContent>
+
+                            <HeaderInfoContent>
+                                {postData.postDTO.postDate}
+                                <div style={{ marginLeft: 12 }} />
+                                {"댓글 : "}
+                                {postData.postDTO.commentCount}
+                                <div style={{ marginLeft: 12 }} />
+                                {"조회수 : "}
+                                {postData.postDTO.viewCount}
+                            </HeaderInfoContent>
+                        </HeaderInfo>
+                    </PostHeader>
+                    <PostBody>
+                        <div>{postData.postDTO.content}</div>
+                    </PostBody>
+                </PostContainer>
+
+                <CommentContainer>
+                    <CommentHeader>
+                        댓글 {postData.postDTO.commentCount}
+                        <ReactionContainer>
+                            <div
+                                style={{
+                                    flexDirection: "column",
+                                    display: "flex",
+                                    alignItems: "center",
+                                }}>
+                                <LikeIcon
+                                    size={30}
+                                    color={"#05796b"}
+                                    onClick={handleLike}
+                                    style={{ cursor: "pointer" }}
+                                />
+                                {postData.postDTO.likeCount}
+                            </div>
+                            <div style={{ marginLeft: 7 }} />
+                            <ScrapIcon
+                                size={30}
+                                color={"#05796b"}
+                                onClick={handleScrap}
+                                style={{ cursor: "pointer" }}
+                            />
+                        </ReactionContainer>
+                    </CommentHeader>
+                    {postData.postDTO.commentList.map((prop) => (
+                        <CommentBody>
+                            <div
+                                style={{
+                                    width: "100%",
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                }}>
+                                <div
+                                    style={{
+                                        fontSize: 17,
+                                        fontWeight: 600,
+                                    }}>
+                                    {prop.commentID}
+                                </div>
+                                <div>{prop.commentDate} </div>
+                            </div>
+                            <div style={{ marginTop: 5 }}>
+                                {prop.commentContent}
+                            </div>
+                        </CommentBody>
+                    ))}
+                </CommentContainer>
+                <CommentInputContainer></CommentInputContainer>
+                <form
+                    style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "flex-end",
+                        fontWeight: 600,
+                        fontSize: 18,
+                        marginTop: 20,
+                    }}
+                    onSubmit={handleCommentSubmit}>
+                    <div
+                        style={{
+                            flexDirection: "column",
+                            display: "flex",
+                            width: 850,
+                        }}>
+                        {userName}
+                        <input
+                            value={commentContent}
+                            onChange={(e) => {
+                                setCommentContent(e.target.value);
+                            }}
+                            style={{
+                                ...inputStyle,
+                                width: "98%",
+                                resize: "none",
+                            }}
+                            placeholder="내용을 입력해주세요."
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        style={{
+                            width: 70,
+                            backgroundColor: "transparent",
+                            border: "none",
+                        }}>
+                        <DefaultButton style={{ height: 30 }}>
+                            등록
+                        </DefaultButton>
+                    </button>
+                </form>
+            </div>
+        );
+        function handleLike() {
+            setLiked(!liked);
+        }
+        function handleScrap() {
+            setScraped(!scraped);
+        }
+    }
+    function DummyPostDetail(postID) {
+        const dummyPost = {
+            postDTO: {
+                board: board,
+                title: postID + "번 게시글",
+                memberID: "Team 마숭숭",
+                content: temp,
+                commentCount: 3,
+                viewCount: 10,
+                liked: liked,
+                likeCount: 2,
+                scraped: scraped,
+                postDate: "2024.05.13",
+                commentList: [
+                    {
+                        commentID: "작성자 1",
+                        commentContent: "댓글 내용 1",
+                        commentDate: "2024.05.13",
+                    },
+                    {
+                        commentID: "작성자 2",
+                        commentContent: "댓글 내용 2",
+                        commentDate: "2024.05.13",
+                    },
+                    {
+                        commentID: "작성자 3",
+                        commentContent: "댓글 내용 3",
+                        commentDate: "2024.05.13",
+                    },
+                ],
+            },
+        };
+        return dummyPost;
+    }
+
     function WriteButton() {
         return (
             <div>
@@ -196,12 +554,11 @@ function Community() {
             </div>
         );
     }
-    function BoardSelectContainer() {
+    function BoardSelect() {
         return (
             <div
                 style={{
                     paddingBottom: 30,
-                    paddingTop: 70,
                 }}>
                 <BoardContent>
                     <BoardButton
@@ -241,8 +598,8 @@ function Community() {
             );
         }
     }
-    // BoardContainer 함수형 컴포넌트 정의
-    function BoardContainer() {
+    // PostList 함수형 컴포넌트 정의
+    function PostList() {
         // 현재 페이지 상태를 관리하는 useState 훅. 초기값은 1
         const [currentPage, setCurrentPage] = useState(1);
         // 최대 표시할 페이지 번호의 수
@@ -255,26 +612,28 @@ function Community() {
         const indexOfFirstPost = indexOfLastPost - POSTS_PER_PAGE;
 
         // freeDummys 배열에서 현재 페이지에 해당하는 포스트만 추출
-        let currentPosts;
-
+        let currentPosts, currentBoard;
         switch (board) {
             case "자유 게시판":
                 currentPosts = freeDummys.slice(
                     indexOfFirstPost,
                     indexOfLastPost
                 );
+                currentBoard = freeDummys;
                 break;
             case "레시피 게시판":
                 currentPosts = recipeDummys.slice(
                     indexOfFirstPost,
                     indexOfLastPost
                 );
+                currentBoard = recipeDummys;
                 break;
             case "나눔 게시판":
                 currentPosts = shareDummys.slice(
                     indexOfFirstPost,
                     indexOfLastPost
                 );
+                currentBoard = shareDummys;
                 break;
             default:
                 console.log("Invalid board value");
@@ -332,7 +691,10 @@ function Community() {
         return (
             <>
                 <BoardFrame>
-                    <BoardName>{board}</BoardName>
+                    <div style={{ display: "flex", width: "100%" }}>
+                        <BoardName>{board}</BoardName>
+                        <SearchFrame />
+                    </div>
                     <BoardHeader>
                         <HeaderContent style={{ width: "15%" }}>
                             번호
@@ -363,6 +725,10 @@ function Community() {
                                         justifyContent: "flex-start",
                                         overflow: "hidden",
                                         whiteSpace: "nowrap",
+                                        cursor: "pointer",
+                                    }}
+                                    onClick={() => {
+                                        navigate("/community/" + post.id);
                                     }}>
                                     {post.title}
                                     <div
@@ -396,7 +762,7 @@ function Community() {
                             }}>
                             <Pagination
                                 postsPerPage={POSTS_PER_PAGE}
-                                totalPosts={freeDummys.length}
+                                totalPosts={currentBoard.length}
                                 paginate={paginate}
                             />
                         </div>

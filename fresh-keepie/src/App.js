@@ -8,14 +8,15 @@ import Start from "./pages/start";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
 import Pwcheck from "./pages/pwcheck";
-import React, { useState } from "react";
+import React from "react";
 import "./assets/fonts/fonts.css";
+import { UserNameProvider } from "./pages/myPage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; //npm install react-router-dom
 
 function App() {
-    const [userName, setUserName] = useState("마숭숭"); // 추후에 서버로부터 유저명 받아서 사용
     return (
-        <>
+        <UserNameProvider>
+            {/*사용자명 동기화를 위한 context provider*/}
             <Router>
                 <Routes>
                     <Route path="/" element={<Start />} />
@@ -29,7 +30,7 @@ function App() {
                     <Route path="/pwcheck" element={<Pwcheck />} />
                 </Routes>
             </Router>
-        </>
+        </UserNameProvider>
     );
 }
 
