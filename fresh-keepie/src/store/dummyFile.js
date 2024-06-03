@@ -1,0 +1,210 @@
+import image1 from '../assets/images/dummyimg/image1.png'
+import image2 from '../assets/images/dummyimg/image2.png'
+import image3 from '../assets/images/dummyimg/image3.png'
+import image4 from '../assets/images/dummyimg/image4.png'
+import image5 from '../assets/images/dummyimg/image5.png'
+import image6 from '../assets/images/dummyimg/image6.png'
+import image7 from '../assets/images/dummyimg/image7.png'
+import image8 from '../assets/images/dummyimg/image8.png'
+import image9 from '../assets/images/dummyimg/image9.png'
+
+
+
+const RecipeItem=[
+    {id : 1,
+    image : image1,
+    title: "아삭아삭 상큼한 즉석 오이무침 만드는 법",
+    ingredients: [
+        { name: "오이", quantity: "1개" },
+        { name: "고추", quantity: "1개" },
+        { name: "양파", quantity: "1/4개" },
+        { name: "파", quantity: "1큰술" },
+    ],
+    steps: [
+        "1. 오이는 굵은 소금으로 문질러 가시부분을 제거하거나 칼등으로 제거 해 주고 동글동글 두께감이 있게 썰어 주고요, 양파는 채, 파와 고추는 송송 썰어 준비해요.",
+        "2. 분량의 양념장을 잘 섞어 만들어요.",
+        "3. 채소를 양념장에 넣어주세요.",
+        "4. 싹싹 잘 버무려 주면 맛있는 오이무침 완성입니다.",
+    ],
+},
+    {id : 2,
+        title: "바스크치즈케이크 오븐없이 간단히 만들기",
+        image : image2,
+        ingredients: [
+            { name: "크림치즈", quantity: "400g" },
+            { name: "설탕", quantity: "100g" },
+            { name: "생크림", quantity: "200ml" },
+            { name: "박력분밀가루", quantity: "20g" },
+            { name: "계란", quantity: "3개" },
+        ],
+        steps: [
+            "1. 실온에 1시간 빼둔 크림치즈를 믹싱볼에 전부 덜어주세요",
+            "2. 설탕 90g 크림치즈에 넣고 저어가면서 섞어주세요.  설탕이 전부 녹아 잘 섞일 수 있도록 해주세요",
+            "3. 계란 3개를 3번 나눠서 넣어주세요 크림치즈에 계란 한 알 넣고 섞어주고 또 한 알 넣고 섞어주고 또 한 알 넣고 섞어주고 이걸 반복해주세요",
+            "4. 생크림 200ml도 믹싱볼에 넣고 잘 섞어주세요",
+            "5. 박력분 20g을 체에 쳐서 넣어주세요 박력분이 없을 경우 일반 밀가루를 넣으셔도 좋아요",
+            "6. 바스크 치즈케이크 반죽이 담긴 틀을 에어프라이어에 넣고 200도 30분 돌려주세요 ",
+            "7. 30분 에어프라이어에 돌려진 바스크 치즈케이크를 에어프라이어에서 빼주세요 ",
+        ],
+    },
+    {id : 3,
+        title: "에어프라이어로 간단히 만드는 감자 그라탕",
+        image : image3,
+            ingredients: [
+                { name: "감자", quantity: "500g" },
+                { name: "우유", quantity: "200ml" },
+                { name: "버터", quantity: "30g" },
+                { name: "치즈", quantity: "100g" },
+                { name: "소금", quantity: "약간" },
+                { name: "후추", quantity: "약간" },
+            ],
+            steps: [
+                "1. 감자는 깨끗이 씻어 껍질을 벗기고 얇게 슬라이스합니다.",
+                "2. 슬라이스한 감자를 물에 담가 전분을 제거합니다.",
+                "3. 버터를 녹인 후 감자 슬라이스를 넣고 소금, 후추로 간합니다.",
+                "4. 그릇에 감자 슬라이스를 깔고 우유를 부어줍니다.",
+                "5. 치즈를 골고루 뿌린 뒤 에어프라이어에 200도로 20-25분간 조리합니다.",
+                "6. 에어프라이어에서 꺼내 치즈가 녹고 감자가 부드러워지면 완성입니다.",
+            ],
+        },
+    
+    {id : 4,
+        title: "에어프라이어로 만드는 크리스피 치킨 텐더",
+        image : image4,
+        ingredients: [
+            { name: "닭 가슴살", quantity: "500g" },
+            { name: "밀가루", quantity: "1/2컵" },
+            { name: "계란", quantity: "2개" },
+            { name: "빵가루", quantity: "1컵" },
+            { name: "소금", quantity: "1/2작은술" },
+            { name: "후추", quantity: "1/4작은술" },
+        ],
+        steps: [
+            "1. 닭 가슴살은 먹기 좋은 크기로 잘라줍니다.",
+            "2. 준비된 닭 가슴살을 밀가루, 계란, 빵가루 순서로 옷을 입혀줍니다.",
+            "3. 에어프라이어 바스켓에 닭 가슴살을 골고루 펴서 담아줍니다.",
+            "4. 에어프라이어를 200도로 예열하고 15-20분간 조리합니다.",
+            "5. 중간에 한 번씩 뒤집어 주면서 골고루 익도록 합니다.",
+            "6. 바삭하고 황금빛이 나면 완성입니다.",
+        ],
+    },
+
+    {id : 5,
+        title: "에어프라이어로 만드는 고구마 샌드위치",
+        image : image5,
+        ingredients: [
+            { name: "고구마", quantity: "2개" },
+            { name: "식빵", quantity: "4장" },
+            { name: "버터", quantity: "2큰술" },
+            { name: "소금", quantity: "약간" },
+            { name: "설탕", quantity: "1작은술" },
+        ],
+        steps: [
+            "1. 고구마는 깨끗이 씻어 껍질을 벗기고 얇게 슬라이스합니다.",
+            "2. 에어프라이어에 고구마 슬라이스를 넣고 200도에서 15-20분간 조리합니다.",
+            "3. 조리 중간에 한 번씩 뒤집어 주면서 고르게 익도록 합니다.",
+            "4. 완성된 고구마 슬라이스에 소금과 설탕을 뿌려 맛을 냅니다.",
+            "5. 식빵에 버터를 바르고 고구마 슬라이스를 올려 샌드위치를 만듭니다.",
+            "6. 에어프라이어에 샌드위치를 넣고 5분간 더 조리하면 완성입니다.",
+        ],
+    },
+    {id : 6,
+        title: "간단한 닭고기 볶음",
+        image : image6,
+        ingredients: [
+            { name: "닭고기(슬라이스)", quantity: "500g" },
+            { name: "양파", quantity: "1개" },
+            { name: "피망", quantity: "1개" },
+            { name: "당근", quantity: "1개" },
+            { name: "간장", quantity: "2 Tbsp" },
+            { name: "설탕", quantity: "1 Tbsp" },
+            { name: "참기름", quantity: "1 Tbsp" },
+            { name: "소금", quantity: "약간" },
+            { name: "후춧가루", quantity: "약간" },
+        ],
+        steps: [
+            "1. 닭고기는 적당한 크기로 잘라주세요.",
+            "2. 양파, 피망, 당근은 적당한 크기로 잘라주세요.",
+            "3. 팬에 기름을 두르고 닭고기를 먼저 볶아주세요.",
+            "4. 닭고기가 익으면 양파, 피망, 당근을 넣고 함께 볶아주세요.",
+            "5. 간장, 설탕, 참기름, 소금, 후춧가루를 넣고 잘 섞어주세요.",
+            "6. 맛이 잘 배이도록 2-3분 더 볶아주세요.",
+            "7. 완성된 닭고기 볶음을 따뜻하게 즐기세요.",
+        ],
+    },
+
+    {id : 7,
+        title: "닭고기 카레",
+        image : image7,
+        ingredients: [
+            { name: "닭고기(다리살)", quantity: "600g" },
+            { name: "감자", quantity: "2개" },
+            { name: "양파", quantity: "1개" },
+            { name: "당근", quantity: "1개" },
+            { name: "카레 가루", quantity: "3 Tbsp" },
+            { name: "물", quantity: "500ml" },
+            { name: "소금", quantity: "약간" },
+            { name: "후춧가루", quantity: "약간" },
+        ],
+        steps: [
+            "1. 닭고기는 적당한 크기로 잘라주세요.",
+            "2. 감자, 양파, 당근은 적당한 크기로 깍둑 썰어주세요.",
+            "3. 냄비에 기름을 두르고 닭고기를 먼저 볶아주세요.",
+            "4. 닭고기가 익으면 감자, 양파, 당근을 넣고 함께 볶아주세요.",
+            "5. 카레 가루를 넣고 물을 부어 잘 섞어주세요.",
+            "6. 소금, 후춧가루로 간을 맞춰주세요.",
+            "7. 중불에서 20-25분 정도 천천히 끓여주세요.",
+            "8. 완성된 닭고기 카레를 따뜻하게 즐기세요.",
+        ],
+    },
+    {id : 8,
+        title: "치킨 마요네즈 샐러드",
+        image : image8,
+        ingredients: [
+            { name: "닭고기(삶은 것)", quantity: "300g" },
+            { name: "양상추", quantity: "1/2포기" },
+            { name: "토마토", quantity: "2개" },
+            { name: "오이", quantity: "1/2개" },
+            { name: "마요네즈", quantity: "3 Tbsp" },
+            { name: "레몬즙", quantity: "1 Tbsp" },
+            { name: "설탕", quantity: "1 tsp" },
+            { name: "소금", quantity: "약간" },
+            { name: "후춧가루", quantity: "약간" },
+        ],
+        steps: [
+            "1. 삶은 닭고기는 적당한 크기로 잘라주세요.",
+            "2. 양상추는 깨끗이 씻어 적당한 크기로 썰어주세요.",
+            "3. 토마토와 오이는 적당한 크기로 썰어주세요.",
+            "4. 마요네즈, 레몬즙, 설탕, 소금, 후춧가루를 섞어 드레싱을 만들어주세요.",
+            "5. 양상추, 토마토, 오이, 닭고기를 그릇에 담고 드레싱을 부어 잘 섞어주세요.",
+            "6. 완성된 치킨 마요네즈 샐러드를 차갑게 즐기세요.",
+        ],
+    },
+    {id : 9,
+        title: "버섯 칼국수",
+        image : image9,
+        ingredients: [
+            { name: "면", quantity: "200g" },
+            { name: "김치", quantity: "1/2포기" },
+            { name: "버섯", quantity: "200g" },
+            { name: "고추장", quantity: "1 큰술" },
+            { name: "다진마늘", quantity: "1 작은술" },
+            { name: "멸치 다시마 육수", quantity: "5컵" },
+            { name: "양파", quantity: "1/2개" },
+            { name: "청양고추", quantity: "2개" },
+
+        ],
+        steps: [
+            "1. 멸치 다시마 육수 5컵을 넣어주세요.",
+            "2. 육수가 끓어오르면 양념장과 양파 1/2개, 청양고추 2개를 썰어넣고 끓여줍니다.",
+            "3. 다시 육수가 끓어오르면 준비한 각종 버섯을 넣어줍니다..",
+            "4. 버섯을 넣고 2분쯤 지나 생면을 넣어줍니다.",
+            "5. 면이 익을 때쯤 간을 보시고 싱거우시면 기호에 맞게 소금으로 간해주세요.",
+        ],
+    },
+]
+
+
+
+
+export default RecipeItem;

@@ -9,7 +9,9 @@ const appContainerStyle = {
     width: "95%",
     height: "95%",
     alignItems: "center",
-    padding: "1.5%",
+   // padding: "1.5%",
+    padding: "2.5%",
+   
 };
 const headerContainerStyle = {
     //헤더 컨테이너(웹 상단) 스타일
