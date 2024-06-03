@@ -1,6 +1,9 @@
 import "./App.css";
 import Home from "./pages/home";
+import Home2 from "./pages/home2";
 import Recipe from "./pages/recipe";
+import RecipeDetail from "./pages/recipedetail";
+
 import Community from "./pages/community";
 import MyPage from "./pages/myPage";
 import Shopping from "./pages/shopping";
@@ -22,7 +25,11 @@ function App() {
                         <Routes>
                             <Route path="/" element={<Start />} />
                             <Route path="/home" element={<Home />} />
+                            <Route path="/home2" element={<Home2 />} />
+
                             <Route path="/recipe" element={<Recipe />} />
+                            <Route path="/recipe/:id" element={<RecipeDetail />} />
+
                             <Route path="/shopping" element={<Shopping />} />
                             <Route path="/community" element={<Community />} />
                             <Route path="/mypage" element={<MyPage />} />

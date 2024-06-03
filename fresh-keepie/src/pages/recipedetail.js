@@ -1,12 +1,11 @@
 import React, {useState} from "react";
-import { Routes, Route, Link } from 'react-router-dom';
-
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import styled from 'styled-components'
 import Topbar from "../components/Topbar";
 import IconSearch from "../assets/images/IconSearch.svg"
 import IconRecipe from "../assets/images/layout.svg"
 import RecipeItem from "../store/dummyFile"
-import RecipeDetail from './recipedetail.js'; 
+import { useParams } from 'react-router-dom';
 
 const Layout=styled.div`
 display : flex;
@@ -16,7 +15,7 @@ align-items: center;
 width : 100%;
 
 
-
+\
 `
 
 const SearchBar =styled.div`
@@ -66,15 +65,14 @@ const SearchImg = styled.img`
   `
 
   const RecipeLayout = styled.div`
-  width : 1700px;
+  width :  1600px;
   height : auto;
   background-color: rgba(168, 209, 204, 0.20);
   border-radius : 50px;
   display : flex;
-flex-wrap: wrap;
-justify-content: space-between;
+  flex-direction : column;
   margin-top : 29.6px;
- padding-bottom : 20px;
+  padding-bottom : 30px;
 
   `
 
@@ -95,23 +93,65 @@ box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `
 
 const RecipeImage=styled.img`
-display : flex;
-justify-content : center;
-align-items : center;
-margin-top : -20px;
-margin-left : 65px;
+display: block; /* 이미지를 블록 요소로 표시하여 수평 중앙 정렬을 위한 auto margin을 사용할 수 있게 합니다. */
+    margin: 10px auto;
+margin-top : 30px;
+text-align : center;
+width : 400px;
+height : 280px;
 `
 
 const RecipeText = styled.span`
 display : flex;
 justify-content : center;
 align-items : center;
-margin-left : 10px;
+text-align : center;
 margin-top : 20px;
+font-size: 30px;
+`
+const Title = styled.div`
+margin-top : 45px;
+font-size : 25px;
+margin-left : 40px;
+`
+const Material = styled.div`
+display : flex;
+flex-direction : row;
+space-between : 30px;
+margin-top : 70px;`
+
+const Ingredient=styled.div`
+display : flex;
+margin-left : 40px;
+font-size : 20px;
+flex-direction : column;
+
+`
+const Sauce = styled.div`
+display : flex;
+flex-direction : column;
+font-size : 20px;
+margin-left : 40px;
+`
+const LayoutTitle = styled.div`
+margin-top : 45px;
+font-size : 30px;
+margin-left : 40px;
 
 `
 
-function Recipe() {
+const Order = styled.div`
+margin-top : 50px;
+font-size : 25px;
+width : 800px;
+margin-left : 200px;
+display : flex;
+justify-content : center;
+align-items:center;
+text-align : center;
+`
+
+function RecipeDetail() {
     const [query, setQuery] = useState('');
 
     const handleInputChange = (event) => {
@@ -121,6 +161,8 @@ function Recipe() {
     const handleSearch = () => {
         console.log('검색어:', query);
     }
+    const { id } = useParams();
+    const recipe = RecipeItem.find(recipe => recipe.id === parseInt(id));
 
     return (
         <Layout>
@@ -136,25 +178,39 @@ function Recipe() {
                 <SearchImg src = {IconSearch} alt = '검색'/>
             </SearchButton>
         </SearchBar>
-    
         <RecipeLayout>
-        {RecipeItem.map(recipe => (
-              <Link to={`/recipe/${recipe.id}`} key={recipe.id}>
-          <ItemLayout>
-            <RecipeImage src={recipe.image} alt={`Recipe ${recipe.id}`} />
-            <RecipeText>{recipe.text1} </RecipeText>
-            </ItemLayout>
-            </Link>
-          
-        ))}
+        <RecipeImage src={recipe.image} alt={recipe.text} />
+        <RecipeText>{recipe.text1}</RecipeText>
+       
      </RecipeLayout>
-     <Routes>
-     <Route path="/recipe/:id" component={RecipeDetail} />
-     </Routes>
-
+        <RecipeLayout>
+        <LayoutTitle>재료(1인분)</LayoutTitle>
+        <Material>
+        <Ingredient>
+        <Title>재료</Title>
+            {recipe.text2.split(', ').map((item, index) => (
+              <div key={index}>{item}</div>
+            ))}
+        </Ingredient>
+  
+        <Sauce>
+        <Title>양념</Title>
+        {recipe.text3.split(', ').map((item, index) => (
+              <div key={index}>{item}</div>
+            ))}
+        </Sauce>
+        </Material>
+     
+        </RecipeLayout>
+        <RecipeLayout>
+        <LayoutTitle>조리순서</LayoutTitle>
+        <Order>{recipe.order1}</Order>
+        <Order>{recipe.order1}</Order>
+        <Order>{recipe.order1}</Order>
+        </RecipeLayout>
         </Layout>
         
     );
 }
 
-export default Recipe;
+export default RecipeDetail;

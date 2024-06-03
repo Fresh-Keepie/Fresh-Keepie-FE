@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
-import MyModal from './MyModal';
+import AddFoodModal from './AddFoodModal';
 import IconAdd from '../assets/images/Plus.svg'
+import IconRefr from '../assets/images/IconRefrigerator.svg'
+import IconCal from '../assets/images/IconCalendar.svg'
 
 const Layout = styled.div`
   display: flex;
@@ -32,7 +34,7 @@ const MonthHeader = styled.div`
   line-height: normal;
   width: 78px;
   height: 18px;
-  margin-top: 50px;
+  //margin-top: 50px;
   margin-left: 20px;
 
   div:first-child {
@@ -48,6 +50,13 @@ const MonthHeader = styled.div`
     justify-content: center;
   }
 `;
+
+const ButtonContainer = styled.div`
+display :flex;
+flex-direction : row;
+justify-content: flex-end;
+margin-top : -40px;
+`
 
 const NavigationButtons = styled.div`
   display: flex;
@@ -113,13 +122,12 @@ const Day = styled.div`
   display: flex;
   flex-direction: column;
   text-align: left;
-
   padding-left : 5px;
-
   background-color: white;
   border: 1px solid #ccc;
   width: 111px;
   height: 116px;
+  cursor : pointer;
 `;
 
 const WeekHeader = styled.div`
@@ -137,6 +145,7 @@ const WeekHeader = styled.div`
 const Button = styled.button`
 background: none;
 border : none;
+cursor : pointer;
 
 width : 50px;
 //margin-left : 700px;
@@ -158,7 +167,7 @@ flex-direction : column;
 
 const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-const Calendar = () => {
+const Calendar = ({onDateClick}) => {
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [products, setProducts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -173,6 +182,16 @@ const Calendar = () => {
     setProducts([...products, product]);
   };
 
+  const handleDateClick = (day) => {
+    const dayProducts = products.filter(
+      (product) =>
+        dayjs(product.expiryDate).isSame(currentDate, 'month') &&
+        dayjs(product.expiryDate).date() === day
+    );
+    onDateClick(dayProducts);
+  };
+
+
   const renderCalendar = () => {
     const emptyDays = Array.from({ length: firstDayOfMonth }, (_, i) => (
       <Day key={`empty-${i}`} />
@@ -186,7 +205,7 @@ const Calendar = () => {
       );
 
       return (
-        <Day key={day}>
+        <Day key={day} onClick={() => handleDateClick(day)}>
           <span>{day}</span>
           <ProductList>
           {dayProducts.map((product, index) => (
@@ -210,7 +229,10 @@ const Calendar = () => {
         <MonthHeader>
           <div>{currentDate.format('MMM')}</div>
           <div>{currentDate.format('YYYY')}</div>
+         
+          
         </MonthHeader>
+        
         <NavigationButtons>
           <ComboBox>
             <Dropdown
@@ -257,7 +279,7 @@ const Calendar = () => {
         </WeekHeader>
         <CalendarWrapper>{renderCalendar()}</CalendarWrapper>
       </PageContainer>
-      <MyModal
+      <AddFoodModal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
         addProduct={addProduct}
