@@ -2,18 +2,19 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Topbar from "../components/Topbar";
+import Calendar from "../components/Calendar";
 import Dday1 from "../assets/images/dday1.svg";
 import Dday7 from "../assets/images/dday7.svg";
 import Dday30 from "../assets/images/dday30.svg";
-import AddFoodModal from "../components/AddFoodModal.js";
+import MyModal from "../components/AddFoodModal.js";
+import AddFridgeModal from "../components/AddFrigeModal.js"; // Add this import
 import IconAdd from "../assets/images/IconAdd.svg";
 import dayjs from 'dayjs';
+import IconDday from '../assets/images/ddaycontainer.svg';
 import IconRefr from '../assets/images/IconRefrigerator.svg';
 import IconCal from '../assets/images/IconCalendar.svg';
 import MyRefri from '../assets/images/Refrigerator.svg';
 import IconAdds from '../assets/images/Plus.svg'
-import AddFridgeModal from "../components/AddFrigeModal.js";
-
 const Layout = styled.div`
   display: flex;
   flex-direction: column;
@@ -75,8 +76,7 @@ const Dday30img = styled.img`
 const ButtonAdd = styled.button`
   background: none;
   border: none;
-  margin-top: 20px;
-  cursor:pointer;
+  margin-top: 32px;
 `;
 
 const ButtonImg = styled.img``;
@@ -93,8 +93,8 @@ const ProductList = styled.div`
   margin-top: 10px;
   display: flex;
   flex-direction: column;
-  div:not(:last-child) {
-    //margin-bottom: 20px;
+  > div:not(:last-child) {
+    margin-bottom: 20px;
   }
 `;
 
@@ -124,14 +124,14 @@ font-family: "Ownglyph meetme";
 font-size: 32px;
 font-style: normal;
 font-weight: 400;
-line-height: normal;`;
+line-height: normal;`
 
-const ProductEXPText = styled.div`
- position: absolute; /* 상대 위치를 기준으로 설정 */
-  bottom: 20px; /* 그림과의 간격 조정 */
-  left: 50%; /* 가운데 정렬을 위해 왼쪽을 중앙으로 이동 */
-  transform: translateX(-50%); /* 가운데 정렬 */
-  color : white;`;
+const ProductEXPText = styled.div` 
+position: absolute; /* 상대 위치를 기준으로 설정 */
+bottom: 20px; /* 그림과의 간격 조정 */
+left: 50%; /* 가운데 정렬을 위해 왼쪽을 중앙으로 이동 */
+transform: translateX(-50%); /* 가운데 정렬 */
+color : white;`
 
 const ProductDdayText = styled.div`
   position: absolute;
@@ -152,20 +152,21 @@ const ProductDdayText = styled.div`
   text-align: center;
 `;
 
+const DdayImg = styled.img``;
+
 const RefriBox = styled.div`
-display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  margin-top : 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  margin-top : 10px;
 `;
 
 const RefriItem = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
- 
-  flex-direction : column;
-  margin-top : 40px;
+  cursor: pointer;
+  margin-top : 20px;
 `;
 
 const RefriImg = styled.img`
@@ -178,7 +179,7 @@ const RefriText = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
- 
+  margin-top: 10px;
 `;
 const FridgeButton=styled.button`
 background: none;
@@ -192,11 +193,9 @@ background: none;
 function Home2() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [fridgeModalIsOpen, setFridgeModalIsOpen] = useState(false);
-  const [products, setProducts] = useState([]);
-  const [fridges, setFridges] = useState([]);
-  const [dday1Products, setDday1Products] = useState([]);
-  const [dday7Products, setDday7Products] = useState([]);
-  const [dday30Products, setDday30Products] = useState([]);
+  const [products, setProducts] = useState({});
+  const [fridges, setFridges] = useState([{ id: 1, name: "나의 냉장고 1" }]);
+  const [selectedFridgeId, setSelectedFridgeId] = useState(fridges[0].id); // Default to first fridge
 
   const openModal = () => {
     setModalIsOpen(true);
@@ -214,37 +213,30 @@ function Home2() {
     setFridgeModalIsOpen(false);
   };
 
-  const addFridge = (fridge) => {
-    setFridges([...fridges, fridge]);
-  };
-
   const addProduct = (product) => {
-    const newProducts = [...products, product];
-    setProducts(newProducts);
-    handleDateClick(newProducts);
-  };
-
-  const handleDateClick = (products) => {
-    const today = dayjs();
-    const dday1 = [];
-    const dday7 = [];
-    const dday30 = [];
-    products.forEach(product => {
-      const expiryDate = dayjs(product.expiryDate);
-      const diff = expiryDate.diff(today, 'day');
-      if (diff <= 0) {
-        dday1.push(product);
-      } else if (diff <= 6) {
-        dday7.push(product);
-      } else if (diff <= 29) {
-        dday30.push(product);
-      }
+    setProducts({
+      ...products,
+      [selectedFridgeId]: [...(products[selectedFridgeId] || []), product],
     });
-
-    setDday1Products(dday1);
-    setDday7Products(dday7);
-    setDday30Products(dday30);
   };
+
+  const addFridge = (fridge) => {
+    const newFridge = { id: fridges.length + 1, name: fridge.name };
+    setFridges([...fridges, newFridge]);
+    setProducts({ ...products, [newFridge.id]: [] });
+  };
+
+  const selectFridge = (id) => {
+    setSelectedFridgeId(id);
+  };
+
+  const getProductsForCurrentFridge = () => {
+    return products[selectedFridgeId] || [];
+  };
+
+  const dday1Products = getProductsForCurrentFridge().filter(product => dayjs(product.expiryDate).diff(dayjs(), 'day') <= 0);
+  const dday7Products = getProductsForCurrentFridge().filter(product => dayjs(product.expiryDate).diff(dayjs(), 'day') > 0 && dayjs(product.expiryDate).diff(dayjs(), 'day') <= 6);
+  const dday30Products = getProductsForCurrentFridge().filter(product => dayjs(product.expiryDate).diff(dayjs(), 'day') > 6 && dayjs(product.expiryDate).diff(dayjs(), 'day') <= 30);
 
   return (
     <Layout>
@@ -267,25 +259,25 @@ function Home2() {
                 <ButtonImg src={IconAdds} />
               </FridgeButton>
           <RefriBox>
-            {fridges.map((fridge, index) => (
-              <RefriItem key={index}>
+            {fridges.map((fridge) => (
+              <RefriItem key={fridge.id} onClick={() => selectFridge(fridge.id)}>
                 <RefriImg src={MyRefri} />
                 <RefriText>{fridge.name}</RefriText>
               </RefriItem>
             ))}
-            <RefriItem>
-              
-            </RefriItem>
+
           </RefriBox>
         </ItemLayout>
         <DateLayout>
-          
+        
           <DdayImgContainer>
             <ProductList>
               {dday1Products.map((product, index) => (
                 <ProductItem key={index}>
                   <Dday1img src={Dday1} alt="Dday1" />
-                  <ProductDdayText>D-{dayjs(product.expiryDate).diff(dayjs(), 'day') + 1}</ProductDdayText>
+                  <ProductDdayText>
+                    D-{dayjs(product.expiryDate).diff(dayjs(), "day") + 1}
+                  </ProductDdayText>
                   <ProductNameText>{product.productName}</ProductNameText>
                   <ProductEXPText>EXP : {product.expiryDate}</ProductEXPText>
                 </ProductItem>
@@ -294,7 +286,9 @@ function Home2() {
             <ProductList>
               {dday7Products.map((product, index) => (
                 <ProductItem key={index}>
-                  <ProductDdayText>D-{dayjs(product.expiryDate).diff(dayjs(), 'day') + 1}</ProductDdayText>
+                  <ProductDdayText>
+                    D-{dayjs(product.expiryDate).diff(dayjs(), "day") + 1}
+                  </ProductDdayText>
                   <ProductNameText>{product.productName}</ProductNameText>
                   <ProductEXPText>EXP : {product.expiryDate}</ProductEXPText>
                   <Dday7img src={Dday7} alt="Dday7" />
@@ -304,7 +298,9 @@ function Home2() {
             <ProductList>
               {dday30Products.map((product, index) => (
                 <ProductItem key={index}>
-                  <ProductDdayText>D-{dayjs(product.expiryDate).diff(dayjs(), 'day') + 1}</ProductDdayText>
+                  <ProductDdayText>
+                    D-{dayjs(product.expiryDate).diff(dayjs(), "day") + 1}
+                  </ProductDdayText>
                   <ProductNameText>{product.productName}</ProductNameText>
                   <ProductEXPText>EXP : {product.expiryDate}</ProductEXPText>
                   <Dday30img src={Dday30} alt="Dday30" />
@@ -317,8 +313,12 @@ function Home2() {
           </ButtonAdd>
         </DateLayout>
       </ContentLayout>
-      <AddFoodModal isOpen={modalIsOpen} onRequestClose={closeModal} addProduct={addProduct} />
-      <AddFridgeModal isOpen={fridgeModalIsOpen} onRequestClose={closeFridgeModal} addFridge={addFridge} />
+      <MyModal isOpen={modalIsOpen} onRequestClose={closeModal} addProduct={addProduct} />
+      <AddFridgeModal
+        isOpen={fridgeModalIsOpen}
+        onRequestClose={closeFridgeModal}
+        addFridge={addFridge}
+      />
     </Layout>
   );
 }

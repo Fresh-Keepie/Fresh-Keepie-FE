@@ -66,17 +66,21 @@ const SearchImg = styled.img`
   `
 
   const RecipeLayout = styled.div`
-  width : 1700px;
-  height : auto;
+width: 100%;
+  max-width: 1600px;
+  height: auto;
   background-color: rgba(168, 209, 204, 0.20);
-  border-radius : 50px;
-  display : flex;
-flex-wrap: wrap;
-justify-content: space-between;
-  margin-top : 29.6px;
- padding-bottom : 20px;
+  border-radius: 50px;
+  gap: 20px;
+  margin-top: 29.6px;
+  padding-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 
-  `
+`
 
 const ItemLayout = styled.div`
 width: 378.603px;
@@ -85,11 +89,14 @@ border-radius: 30px;
 background: #FFFBFB;
 display : flex;
 justify-content : center;
-flex-direction : column;
-align-items : start;
+align-items:center;
+text-align : center;
+margin-left: 70px;
+//flex-direction : column;
+
 margin-top : 20px;
-margin-left : 10px;
-margin-right : 10px;
+//margin-left : 10px;
+//margin-right : 10px;
 box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 //width: calc(25% - 20px);
 `
@@ -99,18 +106,30 @@ display : flex;
 justify-content : center;
 align-items : center;
 margin-top : -20px;
-margin-left : 65px;
+width : 240px;
+height : 170px;
+
 `
 
 const RecipeText = styled.span`
 display : flex;
 justify-content : center;
 align-items : center;
-margin-left : 10px;
+
 margin-top : 20px;
 
 `
-
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+ 
+  flex-direction: column;
+`;
 function Recipe() {
     const [query, setQuery] = useState('');
 
@@ -138,14 +157,13 @@ function Recipe() {
         </SearchBar>
     
         <RecipeLayout>
-        {RecipeItem.map(recipe => (
-              <Link to={`/recipe/${recipe.id}`} key={recipe.id}>
-          <ItemLayout>
-            <RecipeImage src={recipe.image} alt={`Recipe ${recipe.id}`} />
-            <RecipeText>{recipe.text1} </RecipeText>
-            </ItemLayout>
-            </Link>
-          
+        {RecipeItem.map((recipe) => (
+          <ItemLayout key={recipe.id}>
+            <StyledLink to={`/recipe/${recipe.id}`}>
+              <RecipeImage src={recipe.image} alt={`Recipe ${recipe.id}`} />
+              <RecipeText>{recipe.title} </RecipeText>
+            </StyledLink>
+          </ItemLayout>
         ))}
      </RecipeLayout>
      <Routes>

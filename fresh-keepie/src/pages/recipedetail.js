@@ -76,6 +76,28 @@ const SearchImg = styled.img`
 
   `
 
+const RecipeLayout1 = styled.div`
+width :  360px;
+height : auto;
+background-color: rgba(168, 209, 204, 0.20);
+border-radius : 50px;
+display : flex;
+flex-direction : column;
+margin-top : 10px;
+padding-bottom : 30px;
+
+`
+const RecipeLayout2 = styled.div`
+width :  1200px;
+height : auto;
+background-color: rgba(168, 209, 204, 0.20);
+border-radius : 50px;
+display : flex;
+flex-direction : column;
+margin-top : 10px;
+padding-bottom : 30px;
+
+`
 const ItemLayout = styled.div`
 width: 378.603px;
 height: 288px;
@@ -117,38 +139,36 @@ margin-left : 40px;
 const Material = styled.div`
 display : flex;
 flex-direction : row;
-space-between : 30px;
-margin-top : 70px;`
+gap :70px;
+margin-top : 30px;`
 
 const Ingredient=styled.div`
 display : flex;
-margin-left : 40px;
+margin-top : 30px;
 font-size : 20px;
 flex-direction : column;
-
-`
-const Sauce = styled.div`
 display : flex;
-flex-direction : column;
-font-size : 20px;
-margin-left : 40px;
+justify-content : center;
+align-items:center;
+text-align : center;
+gap : 10px;
+
 `
 const LayoutTitle = styled.div`
 margin-top : 45px;
 font-size : 30px;
-margin-left : 40px;
-
+display : flex;
+justify-content : center;
+align-items:center;
+text-align : center;
 `
 
 const Order = styled.div`
 margin-top : 50px;
 font-size : 25px;
-width : 800px;
-margin-left : 200px;
-display : flex;
-justify-content : center;
-align-items:center;
-text-align : center;
+width : 1000px;
+margin-left: 100px;
+
 `
 
 function RecipeDetail() {
@@ -180,34 +200,27 @@ function RecipeDetail() {
         </SearchBar>
         <RecipeLayout>
         <RecipeImage src={recipe.image} alt={recipe.text} />
-        <RecipeText>{recipe.text1}</RecipeText>
-       
-     </RecipeLayout>
-        <RecipeLayout>
-        <LayoutTitle>재료(1인분)</LayoutTitle>
+        <RecipeText>{recipe.title}</RecipeText>
+        </RecipeLayout>
         <Material>
+        <RecipeLayout1>
+        <LayoutTitle>재료(1인분)</LayoutTitle>
+        
         <Ingredient>
-        <Title>재료</Title>
-            {recipe.text2.split(', ').map((item, index) => (
-              <div key={index}>{item}</div>
-            ))}
+        {recipe.ingredients.map((ingredient, index) => (
+                            <div key={index}>{ingredient.name} - {ingredient.quantity}</div>
+                        ))}
         </Ingredient>
-  
-        <Sauce>
-        <Title>양념</Title>
-        {recipe.text3.split(', ').map((item, index) => (
-              <div key={index}>{item}</div>
-            ))}
-        </Sauce>
-        </Material>
+        
      
-        </RecipeLayout>
-        <RecipeLayout>
+        </RecipeLayout1>
+        <RecipeLayout2>
         <LayoutTitle>조리순서</LayoutTitle>
-        <Order>{recipe.order1}</Order>
-        <Order>{recipe.order1}</Order>
-        <Order>{recipe.order1}</Order>
-        </RecipeLayout>
+        {recipe.steps.map((step, index) => (
+                    <Order key={index}>{step}</Order>
+                ))}
+        </RecipeLayout2>
+        </Material>
         </Layout>
         
     );
