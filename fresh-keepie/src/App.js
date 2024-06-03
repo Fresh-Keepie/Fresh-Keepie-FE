@@ -14,9 +14,9 @@ import Pwcheck from "./pages/pwcheck";
 import React from "react";
 import "./assets/fonts/fonts.css";
 import { UserNameProvider } from "./pages/myPage";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; //npm install react-router-dom
+import { BrowserRouter as Router, Routes, Route,NavLink, Link } from "react-router-dom"; //npm install react-router-dom
 import mainLogo from "./assets/images/mainLogo.png";
-import {BrowserRouter as Router, Routes, Route, NavLink, Link,} from "react-router-dom"; //npm install react-router-dom
+//import {BrowserRouter as Router, Routes, Route, NavLink, Link,} from "react-router-dom"; //npm install react-router-dom
 //import ProductRegistration from "./components/ProductRegistration"; // 추가된 부분
 
 function App() {

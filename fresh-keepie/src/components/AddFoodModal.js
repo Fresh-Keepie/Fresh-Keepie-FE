@@ -112,7 +112,7 @@ const AddText = styled.span`
 
 Modal.setAppElement('#root');
 
-const MyModal = ({ isOpen, onRequestClose, addProduct }) => {
+const AddFoodModal = ({ isOpen, onRequestClose, addProduct }) => {
   const [productName, setProductName] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [quantity, setQuantity] = useState('');
@@ -191,4 +191,4 @@ const MyModal = ({ isOpen, onRequestClose, addProduct }) => {
   );
 };
 
-export default MyModal;
+export default AddFoodModal;

@@ -56,11 +56,6 @@ function TopMenu() {
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/shopping">
-                            <MenuContent title="SHOPPING" />
-                        </NavLink>
-                    </li>
-                    <li>
                         <NavLink to="/community">
                             <MenuContent title="COMMUNITY" />
                         </NavLink>
