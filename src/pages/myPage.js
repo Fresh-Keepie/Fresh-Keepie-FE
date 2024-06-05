@@ -34,7 +34,7 @@ const MyPageContainer = styled.div`
 `;
 function MyPage() {
     const { userName, setUserName } = useUserName();
-    const [userLoginID, setUserLoginID] = useState("masoongsoong1");
+    const [userLoginID /*, setUserLoginID*/] = useState("masoongsoong1");
     const [menuOption, setMenuOption] = useState(0); //0 : 개인정보 수정, 1 : 보관한 레시피, 2 : 스크랩한 글, 3 : 내가 쓴 글
 
     const inputStyle = {
@@ -177,7 +177,7 @@ function MyPage() {
         }
 
         function PersonalData() {
-            let curPass = "pass1234";
+            //let curPass = "pass1234";
             const personalContainer = {
                 boxSizing: "border-box",
                 width: "100%",
@@ -229,11 +229,11 @@ function MyPage() {
                     inputConPass === ""
                 ) {
                     alert("비밀번호를 입력해주세요.");
-                } else if (inputCurPass !== curPass) {
+                } /*else if (inputCurPass !== curPass) {
                     {
                         alert("현재 비밀번호가 일치하지 않습니다.");
                     }
-                } else if (inputNewPass === inputCurPass) {
+                }*/ else if (inputNewPass === inputCurPass) {
                     alert("새로운 비밀번호를 입력해 주세요.");
                 } else if (inputNewPass !== inputConPass) {
                     alert("새 비밀번호가 일치하지 않습니다.");
@@ -334,7 +334,7 @@ function MyPage() {
                 );
             }
             function LoginID() {
-                const [inputName, setInputName] = useState("");
+                //const [inputName, setInputName] = useState("");
                 return <div style={commonStyle}>{userLoginID}</div>;
             }
         }

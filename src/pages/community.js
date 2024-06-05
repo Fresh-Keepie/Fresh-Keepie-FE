@@ -905,11 +905,15 @@ function Community() {
                                 })}
                             </div>
                         </div>
-                        {maxPageNumber != totalPages && (
-                            <li>
-                                <PageMove onClick={handleNext}>&gt;</PageMove>
-                            </li>
-                        )}
+                        {maxPageNumber !== totalPages &&
+                            maxPageNumber < 10 &&
+                            totalPages(
+                                <li>
+                                    <PageMove onClick={handleNext}>
+                                        &gt;
+                                    </PageMove>
+                                </li>
+                            )}
                     </PageFrame>
                 </nav>
             );

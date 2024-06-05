@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "../assets/fonts/fonts.css";
 import mainLogo from "../assets/images/mainLogo.png";
 import { NavLink, Link } from "react-router-dom"; //npm install react-router-dom
@@ -9,9 +9,8 @@ const appContainerStyle = {
     width: "95%",
     height: "95%",
     alignItems: "center",
-   // padding: "1.5%",
+    // padding: "1.5%",
     padding: "2.5%",
-   
 };
 const headerContainerStyle = {
     //헤더 컨테이너(웹 상단) 스타일
@@ -104,7 +103,7 @@ const userInfoStyle = {
 };
 
 export default function Topbar() {
-    const { userName, setUserName } = useUserName(); // 추후에 서버로부터 유저명 받아서 사용
+    const { userName } = useUserName(); // 추후에 서버로부터 유저명 받아서 사용
 
     return (
         <div style={appContainerStyle}>
