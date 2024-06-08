@@ -15,6 +15,7 @@ import IconRefr from '../assets/images/IconRefrigerator.svg';
 import IconCal from '../assets/images/IconCalendar.svg';
 import MyRefri from '../assets/images/Refrigerator.svg';
 import IconAdds from '../assets/images/Plus.svg'
+
 const Layout = styled.div`
   display: flex;
   flex-direction: column;

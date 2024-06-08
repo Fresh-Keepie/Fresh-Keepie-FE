@@ -1,16 +1,14 @@
-// src/components/MyModal.js
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import styled from 'styled-components';
 import IconClose from '../assets/images/IconClose.svg';
 import IconAdd from '../assets/images/ButtonAdd.svg';
 
 const ModalContent = styled.div`
-  background: white;
+ background: white;
   border-radius: 10px;
   padding: 0;
 `;
-
 const Title = styled.div`
   display: flex;
   flex-direction: row;
@@ -110,32 +108,38 @@ const AddText = styled.span`
   font-size: 16px;
 `;
 
-Modal.setAppElement('#root');
-
-const MyModal = ({ isOpen, onRequestClose, addProduct }) => {
+const EditFoodModal = ({ isOpen, onRequestClose, product, updateProduct }) => {
   const [productName, setProductName] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [id, setId] = useState(null);
 
-  /*useEffect(() => {
-    console.log("addProduct in MyModal:", addProduct); // 콘솔 로그 추가
-  }, [addProduct]);*/
-
-  const handleSubmit = () => {
-    if (productName && expiryDate && quantity) {
-      console.log("handleSubmit called with:", { productName, expiryDate, quantity }); // 콘솔 로그 추가
-      addProduct({ productName, expiryDate, quantity });
+  useEffect(() => {
+    if (product) {
+      setProductName(product.productName);
+      setExpiryDate(product.expiryDate);
+      setQuantity(product.quantity);
+      setId(product.id); // ID를 설정
+    } else {
       setProductName('');
       setExpiryDate('');
       setQuantity('');
-      onRequestClose();
+      setId(null); // ID를 초기화
     }
+  }, [product]);
+
+  const handleSubmit = () => {
+    const updatedProduct = {id, productName, expiryDate, quantity };
+    console.log(updatedProduct);
+    updateProduct(updatedProduct); // 수정된 상품 정보를 Home 컴포넌트로 전달
+    onRequestClose();
   };
 
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={onRequestClose}
+      shouldCloseOnOverlayClick={false}
       style={{
         overlay: {
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -150,7 +154,7 @@ const MyModal = ({ isOpen, onRequestClose, addProduct }) => {
     >
       <ModalContent>
         <Title>
-          <h2>상품 등록</h2>
+          <h2>상품 수정</h2>
           <CloseButton onClick={onRequestClose}>
             <CloseImg src={IconClose} />
           </CloseButton>
@@ -184,11 +188,11 @@ const MyModal = ({ isOpen, onRequestClose, addProduct }) => {
         </Content>
         <AddButton onClick={handleSubmit}>
           <AddImg src={IconAdd} />
-          <AddText>등록</AddText>
+          <AddText>수정</AddText>
         </AddButton>
       </ModalContent>
     </Modal>
   );
 };
 
-export default MyModal;
+export default EditFoodModal;
