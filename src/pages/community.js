@@ -6,6 +6,7 @@ import styled from "styled-components";
 import Topbar from "../components/Topbar";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import { useUserName } from "./myPage";
+import { fetchData } from "../utils/axios";
 const PageWrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -157,6 +158,7 @@ function Community() {
 
         // 폼 제출 핸들러
         const handleSubmit = (event) => {
+            fetchData("/board/free/list");
             event.preventDefault();
             if (title === "" && content === "") {
                 alert("제목과 내용을 입력해주세요.");
@@ -613,6 +615,7 @@ function Community() {
 
         // freeDummys 배열에서 현재 페이지에 해당하는 포스트만 추출
         let currentPosts, currentBoard;
+
         switch (board) {
             case "자유 게시판":
                 currentPosts = freeDummys.slice(
@@ -906,8 +909,7 @@ function Community() {
                             </div>
                         </div>
                         {maxPageNumber !== totalPages &&
-                            maxPageNumber < 10 &&
-                            totalPages(
+                            totalPages > maxPageNumberLimit && (
                                 <li>
                                     <PageMove onClick={handleNext}>
                                         &gt;

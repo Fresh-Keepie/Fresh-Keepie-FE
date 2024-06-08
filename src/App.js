@@ -23,7 +23,7 @@ function App() {
     return (
         <UserNameProvider>
             {/*사용자명 동기화를 위한 context provider*/}
-            <Router>
+            <Router basename={process.env.PUBLIC_URL}>
                 <Routes>
                     <Route path="/" element={<Start />} />
                     <Route path="/home" element={<Home />} />
