@@ -1,5 +1,4 @@
 import axios from "axios";
-//import React, { useState, useEffect } from "react";
 export const API_URL =
     "http://fresh-keepie-env.eba-kygb2spd.ap-northeast-2.elasticbeanstalk.com/";
 
