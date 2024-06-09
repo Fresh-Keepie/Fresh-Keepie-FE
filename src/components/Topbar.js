@@ -1,23 +1,22 @@
-import React, {useState} from 'react'
+import React from "react";
 import "../assets/fonts/fonts.css";
 import mainLogo from "../assets/images/mainLogo.png";
-import {
-    BrowserRouter as Router,Routes,Route,NavLink, Link,} from "react-router-dom"; //npm install react-router-dom
+import { NavLink, Link } from "react-router-dom"; //npm install react-router-dom
+import { useUserName } from "../pages/myPage";
 
 const appContainerStyle = {
     //전체 컨테이너 스타일
     width: "95%",
-    //position: "absolute",
+    height: "95%",
     alignItems: "center",
+    // padding: "1.5%",
     padding: "2.5%",
-   
 };
 const headerContainerStyle = {
     //헤더 컨테이너(웹 상단) 스타일
     display: "flex",
     width: "95%",
     flexDiretion: "row",
-    position: "absolute",
     alignItems: "center",
     whiteSpace: "nowrap",
 };
@@ -53,11 +52,6 @@ function TopMenu() {
                     <li>
                         <NavLink to="/recipe">
                             <MenuContent title="RECIPE" />
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/shopping">
-                            <MenuContent title="SHOPPING" />
                         </NavLink>
                     </li>
                     <li>
@@ -109,16 +103,15 @@ const userInfoStyle = {
 };
 
 export default function Topbar() {
-    const [userName, setUserName] = useState("마숭숭"); // 추후에 서버로부터 유저명 받아서 사용
+    const { userName } = useUserName(); // 추후에 서버로부터 유저명 받아서 사용
 
-  return (
-    <div style={appContainerStyle}>
-                    <div style={headerContainerStyle}>
-                        <MainLogo />
-                        <TopMenu />
-                        <UserInfo userName={userName} />
-                        </div>
-                        </div>
-    
-  )
+    return (
+        <div style={appContainerStyle}>
+            <div style={headerContainerStyle}>
+                <MainLogo />
+                <TopMenu />
+                <UserInfo userName={userName} />
+            </div>
+        </div>
+    );
 }
