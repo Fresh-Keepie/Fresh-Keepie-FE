@@ -54,7 +54,7 @@ const ButtonText = styled.div`
     color: white;
     transform: translate(-50%, -50%);
     font-size: 20px;
-    font-family: Potta One;
+    font-family: PottaOne;
     font-weight: 400px;
 `;
 

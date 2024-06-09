@@ -71,6 +71,7 @@ const AddText = styled.span`
     color: white;
     font-size: 16px;
 `;
+/* 
 const Button = styled.button`
     margin-top: 20px;
     padding: 10px 20px;
@@ -79,7 +80,7 @@ const Button = styled.button`
     border: none;
     border-radius: 10px;
     cursor: pointer;
-`;
+`; */
 
 const AddFridgeModal = ({ isOpen, onRequestClose, addFridge }) => {
     const [fridgeName, setFridgeName] = useState("");

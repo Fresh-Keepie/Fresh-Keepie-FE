@@ -28,13 +28,13 @@ const ContentLayout = styled.div`
     display: flex;
     flex-direction: row;
     margin-top: 31px;
-    justify-content: flex-start;
+    justify-content: center;
     width: 100%;
     flex-shrink: 0;
 `;
 
 const ItemLayout = styled.div`
-    width: 1150px;
+    width: 900px;
     height: 903px;
     flex-shrink: 0;
     border-radius: 50px;
@@ -44,7 +44,7 @@ const ItemLayout = styled.div`
 `;
 
 const DateLayout = styled.div`
-    width: 630px;
+    width: 600px;
     height: 903px;
     flex-shrink: 0;
     border-radius: 50px;
@@ -120,10 +120,10 @@ const ProductNameText = styled.div`
     left: 50%;
     transform: translateX(-50%);
     color: white;
-    font-family: "Ownglyph meetme";
+    font-family: "Ownglyph-meetme";
     font-size: 32px;
     font-style: normal;
-    font-weight: 400;
+    font-weight: 600;
     line-height: normal;
 `;
 
@@ -160,9 +160,9 @@ function Home() {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [editModalIsOpen, setEditModalIsOpen] = useState(false);
     const [products, setProducts] = useState([]);
-    const [localProducts, setLocalProducts] = useState([]);
 
-    const [itemsForDate, setItemsForDate] = useState({});
+    /* const [localProducts, setLocalProducts] = useState([]);
+    const [itemsForDate, setItemsForDate] = useState({}); */
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [dday1Products, setDday1Products] = useState([]);
     const [dday7Products, setDday7Products] = useState([]);

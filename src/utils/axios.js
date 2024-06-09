@@ -1,6 +1,5 @@
 import axios from "axios";
-export const API_URL =
-    "http://fresh-keepie-env.eba-kygb2spd.ap-northeast-2.elasticbeanstalk.com/";
+export const API_URL = "http://13.125.120.108:8080/";
 
 export async function fetchData(uri) {
     try {

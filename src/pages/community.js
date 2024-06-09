@@ -158,7 +158,7 @@ function Community() {
 
         // 폼 제출 핸들러
         const handleSubmit = (event) => {
-            fetchData("/board/free/list");
+            fetchData("board/free/list");
             event.preventDefault();
             if (title === "" && content === "") {
                 alert("제목과 내용을 입력해주세요.");

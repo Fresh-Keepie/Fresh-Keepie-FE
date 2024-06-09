@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import styled from "styled-components";
 import AddFoodModal from "./AddFoodModal";
+/* import { Link } from "react-router-dom";
 import IconAdd from "../assets/images/Plus.svg";
 import IconRefr from "../assets/images/IconRefrigerator.svg";
-import IconCal from "../assets/images/IconCalendar.svg";
+import IconCal from "../assets/images/IconCalendar.svg"; */
 import EditFoodModal from "./EditFoodModal";
 
 const Layout = styled.div`
@@ -19,10 +19,10 @@ const PageContainer = styled.div`
     flex-direction: column;
 `;
 
-const YearContainer = styled.div`
+/* const YearContainer = styled.div`
     display: flex;
 `;
-
+ */
 const MonthHeader = styled.div`
     display: flex;
     flex-direction: row;
@@ -52,13 +52,13 @@ const MonthHeader = styled.div`
     }
 `;
 
-const ButtonContainer = styled.div`
+/* const ButtonContainer = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
     margin-top: -40px;
 `;
-
+ */
 const NavigationButtons = styled.div`
     display: flex;
     margin-top: 10px;
@@ -144,14 +144,14 @@ const WeekHeader = styled.div`
     margin-top: 20px;
 `;
 
-const Button = styled.button`
+/* const Button = styled.button`
     background: none;
     border: none;
     cursor: pointer;
     width: 50px;
 `;
 
-const ButtonImg = styled.img``;
+const ButtonImg = styled.img``; */
 
 const ProductList = styled.div`
     font-size: 15px;
@@ -208,16 +208,16 @@ const Calendar = ({ onDateClick, products }) => {
 }, [localProducts]);*/
 
     useEffect(() => {
-        console.log("바선생");
         setLocalProducts(products); // 초기 products 값을 localProducts에 설정
     }, [products]);
 
-    useEffect(() => {
-        console.log("바뀜");
-        if (selectedProduct) {
-            handleDateClick(dayjs(selectedProduct.expiryDate).date());
-        }
-    }, [localProducts]);
+    useEffect(
+        () => {
+            if (selectedProduct) {
+                handleDateClick(dayjs(selectedProduct.expiryDate).date());
+            }
+        } /* , [localProducts] */
+    );
 
     useEffect(() => {
         console.log("Calendar component mounted");
@@ -262,7 +262,7 @@ const Calendar = ({ onDateClick, products }) => {
 
     const YearList = Array.from({ length: 9 }, (_, i) => `${2024 - i}`);
     const MonthList = Array.from({ length: 12 }, (_, i) => `${i + 1}`);
-
+    const dropdownStyle = { fontSize: 16 };
     return (
         <Layout>
             <PageContainer>
@@ -275,6 +275,7 @@ const Calendar = ({ onDateClick, products }) => {
                     <ComboBox>
                         <Dropdown
                             value={selectedYear}
+                            style={dropdownStyle}
                             onChange={(e) => {
                                 const newYear = Number(e.target.value);
                                 setSelectedYear(newYear);
@@ -294,6 +295,7 @@ const Calendar = ({ onDateClick, products }) => {
                     <ComboBox>
                         <Dropdown
                             value={selectedMonth}
+                            style={dropdownStyle}
                             onChange={(e) => {
                                 const newMonth = Number(e.target.value);
                                 setSelectedMonth(newMonth);

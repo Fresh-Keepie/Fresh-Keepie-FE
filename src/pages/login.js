@@ -83,7 +83,7 @@ const ButtonText = styled.span`
     ); /* 텍스트를 수평 및 수직 중앙으로 이동시킵니다. */
     color: white; /* 텍스트 색상 설정 */
     font-size: 20px;
-    font-family: "Potta One";
+    font-family: "PottaOne";
     font-weight: 400px;
 `;
 const Error = styled.div`

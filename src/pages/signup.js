@@ -61,7 +61,7 @@ const ButtonText = styled.div`
     color: white;
     transform: translate(-50%, -50%);
     font-size: 20px;
-    font-family: Potta One;
+    font-family: PottaOne;
     font-weight: 400px;
 `;
 
@@ -119,7 +119,7 @@ const Signup = () => {
             console.log(response.data); // 응답 데이터를 콘솔에 출력
 
             if (response.data === "User registered successfully") {
-                setIsRegistered(true);
+                if (!isRegistered) setIsRegistered(true);
                 navigate("/login");
                 console.log("회원가입 성공");
             } else {

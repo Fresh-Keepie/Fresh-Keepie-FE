@@ -151,7 +151,7 @@ function MyPage() {
             width: 1150px;
             height: 650px;
             background-color: #05796b;
-            border-radius: 50px 0px 0px 0px;
+            border-radius: 50px 0px 0px 50px;
         `;
 
         return (
