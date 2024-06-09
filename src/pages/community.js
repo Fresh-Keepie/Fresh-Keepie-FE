@@ -6,12 +6,7 @@ import styled from "styled-components";
 import Topbar from "../components/Topbar";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import { useUserName } from "./myPage";
-import {
-    useFetchBoardList,
-    useFetchPostDetail,
-    usePost,
-    usePostLike,
-} from "../utils/axios";
+import { useFetchBoardList, useFetchPostDetail } from "../utils/axios";
 import axios from "axios";
 export const API_URL = "http://13.125.120.108:8080/";
 const PageWrapper = styled.div`
@@ -61,7 +56,6 @@ function Community() {
     const { userName } = useUserName();
     const navigate = useNavigate();
     const [board, setBoard] = useState("free");
-    const [temp, setTemp] = useState("Temp");
     const [liked, setLiked] = useState(false);
     const [scraped, setScraped] = useState(false);
     function changeBoard(prop) {
@@ -152,7 +146,7 @@ function Community() {
         // 폼 제출 핸들러
         const HandleSubmit = async (event) => {
             event.preventDefault();
-            const response = await axios.post(
+            await axios.post(
                 API_URL + "board/" + board + "/post",
                 {
                     title: title,
@@ -347,7 +341,7 @@ function Community() {
         const CommentInputContainer = styled.div``;
         const handleCommentSubmit = async (event) => {
             event.preventDefault();
-            const response = await axios.post(
+            await axios.post(
                 API_URL + "board/" + board + "/comment/" + postID,
                 {
                     content: commentContent,
@@ -511,8 +505,8 @@ function Community() {
 
         async function HandleLike(postID) {
             if (!liked) {
-                await axios.post(
-                    API_URL + "board/" + "free" + "/like/" + postID,
+                const res = await axios.post(
+                    API_URL + "board/free/like/" + postID,
                     {},
                     {
                         params: {
@@ -520,23 +514,24 @@ function Community() {
                         },
                     }
                 );
-                setLiked(true);
+                console.log(res);
             } else {
-                await axios.delete(
-                    API_URL + "board/" + "free" + "/like/" + postID,
+                const res = await axios.delete(
+                    API_URL + "board/free/like/" + postID,
                     {
                         params: {
                             userId: "hello",
                         },
                     }
                 );
-                setLiked(false);
+                console.log(res);
             }
+            setLiked(!liked);
         }
         async function HandleScrap(postID) {
             if (!scraped) {
-                await axios.post(
-                    API_URL + "board/" + "free" + "/save/" + postID,
+                const res = await axios.post(
+                    API_URL + "board/free/save/" + postID,
                     {},
                     {
                         params: {
@@ -544,18 +539,15 @@ function Community() {
                         },
                     }
                 );
-                setScraped(true);
+                console.log(res);
             } else {
-                await axios.delete(
-                    API_URL + "board/" + "free" + "/save/" + postID,
-                    {
-                        params: {
-                            userId: "hello",
-                        },
-                    }
-                );
-                setScraped(false);
+                await axios.delete(`${API_URL}board/free/save/${postID}`, {
+                    params: {
+                        userId: "hello",
+                    },
+                });
             }
+            setScraped(!scraped);
         }
     }
 

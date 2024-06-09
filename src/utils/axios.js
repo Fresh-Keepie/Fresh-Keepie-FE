@@ -50,7 +50,7 @@ export function useFetchPostDetail(board, id) {
             }
         }
         fetch();
-    }, [id]);
+    }, [board, id]);
     return postDetail;
 }
 
@@ -80,7 +80,7 @@ export function usePost(board, title, content) {
             }
         }
         fetch();
-    }, [board]);
+    }, [board, content, title]);
     return postDetail;
 }
 
