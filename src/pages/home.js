@@ -34,12 +34,14 @@ const ContentLayout = styled.div`
 `;
 
 const ItemLayout = styled.div`
-    width: 900px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    width: 950px;
     height: 903px;
     flex-shrink: 0;
     border-radius: 50px;
     background: rgba(168, 209, 204, 0.2);
-    margin-left: 20px;
     flex-shrink: 0;
 `;
 
@@ -101,6 +103,7 @@ const ProductList = styled.div`
 const DdayImgContainer = styled.div``;
 
 const ButtonContainer = styled.div`
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;

@@ -28,7 +28,6 @@ const MonthHeader = styled.div`
     flex-direction: row;
     text-align: center;
     color: #585757;
-    font-family: Inter;
     font-size: 20px;
     font-style: normal;
     font-weight: 700;
@@ -67,7 +66,7 @@ const NavigationButtons = styled.div`
 
 const ComboBox = styled.div`
     width: 80px;
-    height: 50px;
+    height: 35px;
     flex-shrink: 0;
     border-radius: 10px;
     border: 1px solid #999;
@@ -80,13 +79,12 @@ const ComboBox = styled.div`
 
 const Dropdown = styled.select`
     width: 80px;
-    height: 40.82px;
+    height: px;
     flex-shrink: 0;
     border: 0;
-    background: #fff;
     color: #000;
     font-family: "Pretendard";
-    font-size: 20px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -110,9 +108,8 @@ const CalendarWrapper = styled.div`
     text-align: left;
     grid-template-columns: repeat(7, 117px);
     grid-template-rows: repeat(6, 117px);
-    margin-top: 8px;
     color: #000;
-    font-family: "Pretendard Variable";
+    font-family: "PretendardVariable";
     font-size: 13px;
     font-style: normal;
     font-weight: 400;
@@ -262,7 +259,6 @@ const Calendar = ({ onDateClick, products }) => {
 
     const YearList = Array.from({ length: 9 }, (_, i) => `${2024 - i}`);
     const MonthList = Array.from({ length: 12 }, (_, i) => `${i + 1}`);
-    const dropdownStyle = { fontSize: 16 };
     return (
         <Layout>
             <PageContainer>
@@ -275,7 +271,6 @@ const Calendar = ({ onDateClick, products }) => {
                     <ComboBox>
                         <Dropdown
                             value={selectedYear}
-                            style={dropdownStyle}
                             onChange={(e) => {
                                 const newYear = Number(e.target.value);
                                 setSelectedYear(newYear);
@@ -295,7 +290,6 @@ const Calendar = ({ onDateClick, products }) => {
                     <ComboBox>
                         <Dropdown
                             value={selectedMonth}
-                            style={dropdownStyle}
                             onChange={(e) => {
                                 const newMonth = Number(e.target.value);
                                 setSelectedMonth(newMonth);

@@ -53,7 +53,7 @@ const LinkContainer = styled.div`
 const StyledLink = styled(Link)`
     font-size: 18px;
     color: black;
-    font-family: "Ownglyph meetme";
+    font-family: "Ownglyph-meetme";
     font-weight: 400px;
     text-decoration: none;
 `;

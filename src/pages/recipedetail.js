@@ -77,7 +77,6 @@ const RecipeLayout1 = styled.div`
     display: flex;
     flex-direction: column;
     margin-top: 10px;
-    padding-bottom: 30px;
 `;
 const RecipeLayout2 = styled.div`
     width: 1200px;
@@ -152,6 +151,7 @@ const LayoutTitle = styled.div`
     justify-content: center;
     align-items: center;
     text-align: center;
+    font-weight: 600;
 `;
 
 const Order = styled.div`
@@ -161,6 +161,10 @@ const Order = styled.div`
     margin-left: 100px;
 `;
 
+const MainContainer = styled.div`
+    font-family: "APPLESDGOTHICNEO";
+    margin-bottom: 50px;
+`;
 function RecipeDetail() {
     const [query, setQuery] = useState("");
 
@@ -177,6 +181,7 @@ function RecipeDetail() {
     return (
         <Layout>
             <Topbar />
+
             <SearchBar>
                 <SearchingInput
                     type="text"
@@ -188,29 +193,31 @@ function RecipeDetail() {
                     <SearchImg src={IconSearch} alt="검색" />
                 </SearchButton>
             </SearchBar>
-            <RecipeLayout>
-                <RecipeImage src={recipe.image} alt={recipe.text} />
-                <RecipeText>{recipe.title}</RecipeText>
-            </RecipeLayout>
-            <Material>
-                <RecipeLayout1>
-                    <LayoutTitle>재료(1인분)</LayoutTitle>
+            <MainContainer>
+                <RecipeLayout>
+                    <RecipeImage src={recipe.image} alt={recipe.text} />
+                    <RecipeText>{recipe.title}</RecipeText>
+                </RecipeLayout>
+                <Material>
+                    <RecipeLayout1>
+                        <LayoutTitle>재료(1인분)</LayoutTitle>
 
-                    <Ingredient>
-                        {recipe.ingredients.map((ingredient, index) => (
-                            <div key={index}>
-                                {ingredient.name} - {ingredient.quantity}
-                            </div>
+                        <Ingredient>
+                            {recipe.ingredients.map((ingredient, index) => (
+                                <div key={index}>
+                                    {ingredient.name} - {ingredient.quantity}
+                                </div>
+                            ))}
+                        </Ingredient>
+                    </RecipeLayout1>
+                    <RecipeLayout2>
+                        <LayoutTitle>조리순서</LayoutTitle>
+                        {recipe.steps.map((step, index) => (
+                            <Order key={index}>{step}</Order>
                         ))}
-                    </Ingredient>
-                </RecipeLayout1>
-                <RecipeLayout2>
-                    <LayoutTitle>조리순서</LayoutTitle>
-                    {recipe.steps.map((step, index) => (
-                        <Order key={index}>{step}</Order>
-                    ))}
-                </RecipeLayout2>
-            </Material>
+                    </RecipeLayout2>
+                </Material>
+            </MainContainer>
         </Layout>
     );
 }
