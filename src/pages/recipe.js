@@ -4,7 +4,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import styled from "styled-components";
 import Topbar from "../components/Topbar";
 import IconSearch from "../assets/images/IconSearch.svg";
-import IconRecipe from "../assets/images/layout.svg";
+/* import IconRecipe from "../assets/images/layout.svg"; */
 import RecipeItem from "../store/dummyFile";
 import RecipeDetail from "./recipedetail.js";
 
