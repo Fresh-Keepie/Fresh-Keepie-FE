@@ -6,3 +6,21 @@
     font-weight: 400;
     font-style: normal;
 }
+
+@font-face {
+    /* 사용할 폰트의 이름 */
+    font-family: "POTTAONE";
+    font-display: fallback;
+    src: url("./POTTAONE.woff") format("woff");
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    /* 사용할 폰트의 이름 */
+    font-family: "OMYU-PRETTY";
+    font-display: fallback;
+    src: url("./OMYU-PRETTY.woff") format("woff");
+    font-weight: 400;
+    font-style: normal;
+}

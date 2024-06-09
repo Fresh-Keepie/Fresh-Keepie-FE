@@ -119,7 +119,7 @@ const Signup = () => {
             console.log(response.data); // 응답 데이터를 콘솔에 출력
 
             if (response.data === "User registered successfully") {
-                setIsRegistered(true);
+                if (!isRegistered) setIsRegistered(true);
                 navigate("/login");
                 console.log("회원가입 성공");
             } else {
