@@ -144,102 +144,56 @@ const Signup = () => {
     }
   };
 
-        try {
-            const response = await axios.post(
-                "http://fresh-keepie-env.eba-kygb2spd.ap-northeast-2.elasticbeanstalk.com/user/signup",
-                {
-                    userId: identifier,
-                    password,
-                    password2: confirmPassword,
-                    nickname,
-                    birth: birthday ? birthday.toISOString().split("T")[0] : "",
-                    email,
-                }
-            );
-
-            console.log(response.data); // 응답 데이터를 콘솔에 출력
-
-            if (response.data === "User registered successfully") {
-                if (!isRegistered) setIsRegistered(true);
-                navigate("/login");
-                console.log("회원가입 성공");
-            } else {
-                setError("회원가입 중 오류가 발생했습니다.");
-            }
-        } catch (error) {
-            if (error.response) {
-                const responseError = error.response.data;
-                if (responseError === "Invalid form data") {
-                    setError("모든 정보를 입력해주세요.");
-                } else if (responseError.includes("User already exists:")) {
-                    if (responseError.includes("Username already exists")) {
-                        setError("이미 존재하는 아이디입니다.");
-                    } else if (
-                        responseError.includes("Nickname already exists")
-                    ) {
-                        setError("이미 존재하는 닉네임입니다.");
-                    } else if (responseError.includes("Email already exists")) {
-                        setError("이미 존재하는 이메일입니다.");
-                    }
-                } else {
-                    setError("회원가입 중 오류가 발생했습니다.");
-                }
-            } else {
-                setError("회원가입 중 오류가 발생했습니다.");
-            }
-        }
-    };
-
-    return (
-        <Layout>
-            <SignupContainer>
-                <SignupImg src={IconSignup} alt="signup" />
-            </SignupContainer>
-            <SignupForm onSubmit={handleSignup}>
-                <Input
-                    type="text"
-                    value={identifier}
-                    onChange={(e) => setIdentifier(e.target.value)}
-                    placeholder="아이디"
-                />
-                <Input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="비밀번호"
-                />
-                <Input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="비밀번호 확인"
-                />
-                <Error>{error && <div>{error}</div>}</Error>
-                <Input
-                    type="text"
-                    value={nickname}
-                    onChange={(e) => setNickname(e.target.value)}
-                    placeholder="닉네임"
-                />
-                <DateInput
-                    selected={birthday}
-                    onChange={(date) => setBirthday(date)}
-                    placeholderText="생년월일"
-                    dateFormat="yyyy-MM-dd"
-                />
-                <Input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="이메일"
-                />
-                <Button type="submit">
-                    <ButtonImg src={LoginIcon} alt="회원가입" />
-                    <ButtonText>SIGN UP</ButtonText>
-                </Button>
-            </SignupForm>
-        </Layout>
-    );
+  return (
+    <Layout>
+      <SignupContainer>
+        <SignupImg src={IconSignup} alt="signup" />
+      </SignupContainer>
+      <SignupForm onSubmit={handleSignup}>
+        <Input
+          type="text"
+          value={identifier}
+          onChange={(e) => setIdentifier(e.target.value)}
+          placeholder="아이디"
+        />
+        <Input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="비밀번호"
+        />
+        <Input
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          placeholder="비밀번호 확인"
+        />
+        <Error>{error && <div>{error}</div>}</Error>
+        <Input
+          type="text"
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
+          placeholder="닉네임"
+        />
+        <DateInput
+          selected={birthday}
+          onChange={(date) => setBirthday(date)}
+          placeholderText="생년월일"
+          dateFormat="yyyy-MM-dd"
+        />
+        <Input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="이메일"
+        />
+        <Button type="submit">
+          <ButtonImg src={LoginIcon} alt="회원가입" />
+          <ButtonText>SIGN UP</ButtonText>
+        </Button>
+      </SignupForm>
+    </Layout>
+  );
 };
 
 export default Signup;

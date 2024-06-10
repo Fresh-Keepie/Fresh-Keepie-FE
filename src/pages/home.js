@@ -1,5 +1,5 @@
-import React, { useState,useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
 import styled from "styled-components";
 import Topbar from "../components/Topbar";
@@ -189,25 +189,25 @@ function Home() {
     };
 
     const addProduct = (product) => {
-      const updatedProducts = [...products, { ...product, id: Date.now() }];
-      setProducts(updatedProducts);
-      saveProductsToLocalStorage(updatedProducts); // 로컬 스토리지에 저장
-      handleDateClick(updatedProducts);
+        setProducts([...products, { ...product, id: Date.now() }]);
+        console.log("Product addedd:", product);
+        handleDateClick([...products, product]);
     };
+
     // Home 컴포넌트의 updateProduct 함수 수정
-    const saveProductsToLocalStorage = (products) => {
-      localStorage.setItem('products', JSON.stringify(products));
-    };
-    /*useEffect(() => {
-      const storedProducts = localStorage.getItem('products');
-      if (storedProducts) {
-        const parsedProducts = JSON.parse(storedProducts);
-        setProducts(parsedProducts);
-        handleDateClick(parsedProducts);
-      }
-    }, []);*/
-
-
+    /*const updateProduct = (updatedProduct) => {
+  // 이전 상태를 가져와서 업데이트하는 함수형 업데이트 사용
+  setProducts(prevProducts => {
+    const updatedProducts = prevProducts.map(product =>
+      product.id === updatedProduct.id ? updatedProduct : product
+    );
+    console.log("Updated products state:", updatedProducts);
+    // 이 부분에서 handleDateClick을 호출할 때 updatedProducts를 전달해야 합니다.
+    handleDateClick(updatedProducts); // 업데이트된 상품 목록을 전달
+    return updatedProducts;
+  });
+};
+*/
     const updateProduct = (updatedProduct) => {
         setProducts((prevProducts) => {
             const updatedProducts = prevProducts.map((product) =>
@@ -219,7 +219,17 @@ function Home() {
         });
     };
 
-  
+    /*
+const updateProduct = (updatedProduct) => {
+  setLocalProducts((prevProducts) => {
+    const updatedProducts = prevProducts.map((product) =>
+      product.id === updatedProduct.id ? updatedProduct : product
+    );
+    handleDateClick(dayjs(updatedProduct.expiryDate).date());// 업데이트된 상품 목록을 전달
+    console.log('Updated products state:', updatedProducts);
+    return updatedProducts;
+  });
+};*/
 
     const handleDateClick = (products) => {
         const today = dayjs();

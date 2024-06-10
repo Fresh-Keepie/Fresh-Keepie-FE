@@ -1,5 +1,5 @@
 // src/components/MyModal.js
-import React, { useState, useEffect} from 'react';
+import React, { useState} from 'react';
 import Modal from 'react-modal';
 import styled from 'styled-components';
 import IconClose from '../assets/images/IconClose.svg';
