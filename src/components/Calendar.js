@@ -1,13 +1,12 @@
-import React, { useState } from "react";
-/*
-import { Link } from "react-router-dom";
-import IconRefr from "../assets/images/IconRefrigerator.svg";
-import IconCal from "../assets/images/IconCalendar.svg";
-*/
+import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import styled from "styled-components";
 import AddFoodModal from "./AddFoodModal";
+/* import { Link } from "react-router-dom";
 import IconAdd from "../assets/images/Plus.svg";
+import IconRefr from "../assets/images/IconRefrigerator.svg";
+import IconCal from "../assets/images/IconCalendar.svg"; */
+import EditFoodModal from "./EditFoodModal";
 
 const Layout = styled.div`
     display: flex;
@@ -19,18 +18,16 @@ const PageContainer = styled.div`
     display: flex;
     flex-direction: column;
 `;
-/*
-const YearContainer = styled.div`
+
+/* const YearContainer = styled.div`
     display: flex;
 `;
-*/
-
+ */
 const MonthHeader = styled.div`
     display: flex;
     flex-direction: row;
     text-align: center;
     color: #585757;
-    font-family: Inter;
     font-size: 20px;
     font-style: normal;
     font-weight: 700;
@@ -59,8 +56,8 @@ const MonthHeader = styled.div`
     flex-direction: row;
     justify-content: flex-end;
     margin-top: -40px;
-`; */
-
+`;
+ */
 const NavigationButtons = styled.div`
     display: flex;
     margin-top: 10px;
@@ -69,7 +66,7 @@ const NavigationButtons = styled.div`
 
 const ComboBox = styled.div`
     width: 80px;
-    height: 50px;
+    height: 35px;
     flex-shrink: 0;
     border-radius: 10px;
     border: 1px solid #999;
@@ -82,13 +79,12 @@ const ComboBox = styled.div`
 
 const Dropdown = styled.select`
     width: 80px;
-    height: 40.82;
+    height: px;
     flex-shrink: 0;
     border: 0;
-    background: #fff;
     color: #000;
     font-family: "Pretendard";
-    font-size: 20px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -112,9 +108,8 @@ const CalendarWrapper = styled.div`
     text-align: left;
     grid-template-columns: repeat(7, 117px);
     grid-template-rows: repeat(6, 117px);
-    margin-top: 8px;
     color: #000;
-    font-family: "Pretendard Variable";
+    font-family: "PretendardVariable";
     font-size: 13px;
     font-style: normal;
     font-weight: 400;
@@ -145,22 +140,22 @@ const WeekHeader = styled.div`
     font-weight: 700;
     margin-top: 20px;
 `;
-const Button = styled.button`
+
+/* const Button = styled.button`
     background: none;
     border: none;
     cursor: pointer;
-
     width: 50px;
-    //margin-left : 700px;
-    //margin-top : 30px;
 `;
-const ButtonImg = styled.img``;
+
+const ButtonImg = styled.img``; */
 
 const ProductList = styled.div`
     font-size: 15px;
     margin-top: 10px;
     display: flex;
     flex-direction: column;
+
     > div:not(:last-child) {
         margin-bottom: 5px; /* 원하는 여백 크기로 조정 */
     }
@@ -168,11 +163,11 @@ const ProductList = styled.div`
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-const Calendar = ({ onDateClick }) => {
+const Calendar = ({ onDateClick, products }) => {
     const [currentDate, setCurrentDate] = useState(dayjs());
-    const [products, setProducts] = useState([]);
+    const [localProducts, setLocalProducts] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
+    const [selectedProduct, setSelectedProduct] = useState(null);
     const daysInMonth = currentDate.daysInMonth();
     const firstDayOfMonth = currentDate.startOf("month").day();
     const [selectedYear, setSelectedYear] = useState(currentDate.year());
@@ -180,16 +175,55 @@ const Calendar = ({ onDateClick }) => {
 
     const addProduct = (product) => {
         console.log("Product added:", product);
-        setProducts([...products, product]);
+        setLocalProducts([...localProducts, product]);
     };
 
     const handleDateClick = (day) => {
-        const dayProducts = products.filter(
+        const dayProducts = localProducts.filter(
             (product) =>
                 dayjs(product.expiryDate).isSame(currentDate, "month") &&
                 dayjs(product.expiryDate).date() === day
         );
         onDateClick(dayProducts);
+        console.log("Date clicked:", day);
+    };
+
+    const updateProduct = (updatedProduct) => {
+        setLocalProducts((prevProducts) => {
+            const updatedProducts = prevProducts.map((product) =>
+                product.id === updatedProduct.id ? updatedProduct : product
+            );
+            return updatedProducts;
+        });
+        handleDateClick(updatedProduct.expiryDate); // 수정된 상품의 만료일로만 업데이트
+    };
+
+    /*useEffect(() => {
+  if (localProducts.length > 0) {
+    handleDateClick(localProducts);
+  }
+}, [localProducts]);*/
+
+    useEffect(() => {
+        setLocalProducts(products); // 초기 products 값을 localProducts에 설정
+    }, [products]);
+
+    useEffect(
+        () => {
+            if (selectedProduct) {
+                handleDateClick(dayjs(selectedProduct.expiryDate).date());
+            }
+        } /* , [localProducts] */
+    );
+
+    useEffect(() => {
+        console.log("Calendar component mounted");
+        setLocalProducts(products); // 초기 products 값을 localProducts에 설정
+    }, [products]);
+
+    const handleProductClick = (product) => {
+        setSelectedProduct(product);
+        setIsModalOpen(true);
     };
 
     const renderCalendar = () => {
@@ -198,7 +232,7 @@ const Calendar = ({ onDateClick }) => {
         ));
         const days = Array.from({ length: daysInMonth }, (_, i) => {
             const day = i + 1;
-            const dayProducts = products.filter(
+            const dayProducts = localProducts.filter(
                 (product) =>
                     dayjs(product.expiryDate).isSame(currentDate, "month") &&
                     dayjs(product.expiryDate).date() === day
@@ -209,7 +243,11 @@ const Calendar = ({ onDateClick }) => {
                     <span>{day}</span>
                     <ProductList>
                         {dayProducts.map((product, index) => (
-                            <div key={index}>{product.productName}</div>
+                            <div
+                                key={index}
+                                onClick={() => handleProductClick(product)}>
+                                {product.productName}
+                            </div>
                         ))}
                     </ProductList>
                 </Day>
@@ -221,7 +259,6 @@ const Calendar = ({ onDateClick }) => {
 
     const YearList = Array.from({ length: 9 }, (_, i) => `${2024 - i}`);
     const MonthList = Array.from({ length: 12 }, (_, i) => `${i + 1}`);
-
     return (
         <Layout>
             <PageContainer>
@@ -269,9 +306,9 @@ const Calendar = ({ onDateClick }) => {
                             ))}
                         </Dropdown>
                     </ComboBox>
-                    <Button onClick={() => setIsModalOpen(true)}>
-                        <ButtonImg src={IconAdd} />
-                    </Button>
+                    {/*<Button onClick={() => setIsModalOpen(true)}>
+            <ButtonImg src={IconAdd} />
+            </Button>*/}
                 </NavigationButtons>
 
                 <WeekHeader>
@@ -286,6 +323,19 @@ const Calendar = ({ onDateClick }) => {
                 onRequestClose={() => setIsModalOpen(false)}
                 addProduct={addProduct}
             />
+            {selectedProduct != null && (
+                <EditFoodModal
+                    isOpen={true}
+                    onRequestClose={() => setSelectedProduct(null)}
+                    product={selectedProduct}
+                    //updateProduct={updateProduct}
+                    onSave={(updatedProduct) => {
+                        updateProduct(updatedProduct);
+                        setIsModalOpen(false);
+                        setSelectedProduct(null);
+                    }}
+                />
+            )}
         </Layout>
     );
 };

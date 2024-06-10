@@ -3,10 +3,8 @@ import Home from "./pages/home";
 import Home2 from "./pages/home2";
 import Recipe from "./pages/recipe";
 import RecipeDetail from "./pages/recipedetail";
-
 import Community from "./pages/community";
 import MyPage from "./pages/myPage";
-import Shopping from "./pages/shopping";
 import Start from "./pages/start";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
@@ -23,7 +21,7 @@ function App() {
     return (
         <UserNameProvider>
             {/*사용자명 동기화를 위한 context provider*/}
-            <Router>
+            <Router basename={process.env.PUBLIC_URL}>
                 <Routes>
                     <Route path="/" element={<Start />} />
                     <Route path="/home" element={<Home />} />
@@ -31,8 +29,6 @@ function App() {
 
                     <Route path="/recipe" element={<Recipe />} />
                     <Route path="/recipe/:id" element={<RecipeDetail />} />
-
-                    <Route path="/shopping" element={<Shopping />} />
                     <Route path="/community/*" element={<Community />} />
                     <Route path="/mypage" element={<MyPage />} />
                     <Route path="/login" element={<Login />} />

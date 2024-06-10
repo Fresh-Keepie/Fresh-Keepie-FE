@@ -7,10 +7,11 @@ import Calendar from "../components/Calendar";
 import Dday1 from "../assets/images/dday1.svg";
 import Dday7 from "../assets/images/dday7.svg";
 import Dday30 from "../assets/images/dday30.svg";
-import AddFoodModal from "../components/AddFoodModal.js";
+import AddFoodModal from "../components/AddFoodModal";
+import EditFoodModal from "../components/EditFoodModal";
 import IconAdd from "../assets/images/IconAdd.svg";
 import dayjs from "dayjs";
-//import IconDday from '../assets/images/ddaycontainer.svg'
+//import IconDday from '../assets/images/ddaycontainer.svg';
 import IconRefr from "../assets/images/IconRefrigerator.svg";
 import IconCal from "../assets/images/IconCalendar.svg";
 
@@ -22,25 +23,30 @@ const Layout = styled.div`
     width: 100%;
     flex-shrink: 0;
 `;
+
 const ContentLayout = styled.div`
     display: flex;
     flex-direction: row;
     margin-top: 31px;
-    justify-content: flex-start;
+    justify-content: center;
     width: 100%;
     flex-shrink: 0;
 `;
+
 const ItemLayout = styled.div`
-    width: 1150px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    width: 950px;
     height: 903px;
     flex-shrink: 0;
     border-radius: 50px;
     background: rgba(168, 209, 204, 0.2);
-    margin-left: 20px;
     flex-shrink: 0;
 `;
+
 const DateLayout = styled.div`
-    width: 630px;
+    width: 600px;
     height: 903px;
     flex-shrink: 0;
     border-radius: 50px;
@@ -50,16 +56,19 @@ const DateLayout = styled.div`
     flex-direction: column;
     align-items: center;
 `;
+
 const Dday1img = styled.img`
     margin-top: 40px;
     width: 453px;
     height: 90px;
 `;
+
 const Dday7img = styled.img`
     width: 453px;
     height: 90px;
     margin-top: 32px;
 `;
+
 const Dday30img = styled.img`
     width: 453px;
     height: 90px;
@@ -71,28 +80,30 @@ const ButtonAdd = styled.button`
     border: none;
     margin-top: 32px;
 `;
+
 const ButtonImg = styled.img``;
+
 const Button = styled.button`
     background: none;
     border: none;
     cursor: pointer;
-
     width: 50px;
-    //margin-left : 700px;
-    //margin-top : 30px;
 `;
+
 const ProductList = styled.div`
     font-size: 15px;
     margin-top: 10px;
     display: flex;
     flex-direction: column;
     > div:not(:last-child) {
-        margin-bottom: 20px; /* 원하는 여백 크기로 조정 */
+        margin-bottom: 20px;
     }
 `;
+
 const DdayImgContainer = styled.div``;
 
 const ButtonContainer = styled.div`
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -101,36 +112,37 @@ const ButtonContainer = styled.div`
 `;
 
 const ProductItem = styled.div`
-    position: relative; /* 부모 요소로부터의 상대 위치 설정 */
-    text-align: center; /* 텍스트를 가운데 정렬합니다. */
+    position: relative;
+    text-align: center;
+    cursor: pointer;
 `;
+
 const ProductNameText = styled.div`
-    position: absolute; /* 상대 위치를 기준으로 설정 */
-    bottom: 45px; /* 그림과의 간격 조정 */
-    left: 50%; /* 가운데 정렬을 위해 왼쪽을 중앙으로 이동 */
-    transform: translateX(-50%); /* 가운데 정렬 */
+    position: absolute;
+    bottom: 45px;
+    left: 50%;
+    transform: translateX(-50%);
     color: white;
-    color: #fff;
-    font-family: "Ownglyph meetme";
+    font-family: "Ownglyph-meetme";
     font-size: 32px;
     font-style: normal;
-    font-weight: 400;
+    font-weight: 600;
     line-height: normal;
 `;
 
 const ProductEXPText = styled.div`
-    position: absolute; /* 상대 위치를 기준으로 설정 */
-    bottom: 20px; /* 그림과의 간격 조정 */
-    left: 50%; /* 가운데 정렬을 위해 왼쪽을 중앙으로 이동 */
-    transform: translateX(-50%); /* 가운데 정렬 */
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     color: white;
 `;
 
 const ProductDdayText = styled.div`
-    position: absolute; /* 상대 위치를 기준으로 설정 */
-    bottom: 20px; /* 그림과의 간격 조정 */
-    left: 10%; /* 가운데 정렬을 위해 왼쪽을 중앙으로 이동 */
-    transform: translateX(-50%); /* 가운데 정렬 */
+    position: absolute;
+    bottom: 20px;
+    left: 10%;
+    transform: translateX(-50%);
     font-family: Poppins;
     font-size: 25.898px;
     font-style: normal;
@@ -142,16 +154,19 @@ const ProductDdayText = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    text-align: center; /* 텍스트를 수평으로 가운데 정렬합니다. */
+    text-align: center;
 `;
 
-//const DdayImg = styled.img``
+//const DdayImg = styled.img``;
 
 function Home() {
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [editModalIsOpen, setEditModalIsOpen] = useState(false);
     const [products, setProducts] = useState([]);
-    // const [itemsForDate, setItemsForDate] = useState({ });
 
+    /* const [localProducts, setLocalProducts] = useState([]);
+    const [itemsForDate, setItemsForDate] = useState({}); */
+    const [selectedProduct, setSelectedProduct] = useState(null);
     const [dday1Products, setDday1Products] = useState([]);
     const [dday7Products, setDday7Products] = useState([]);
     const [dday30Products, setDday30Products] = useState([]);
@@ -159,11 +174,62 @@ function Home() {
     const openModal = () => {
         setModalIsOpen(true);
     };
-    //const closeModal = () => {setModalIsOpen(false);};
-    const addProduct = (product) => {
-        console.log("Product added:", product);
-        setProducts([...products, product]);
+
+    const closeModal = () => {
+        setModalIsOpen(false);
     };
+
+    const openEditModal = (product) => {
+        setSelectedProduct(product);
+        setEditModalIsOpen(true);
+    };
+
+    const closeEditModal = () => {
+        setEditModalIsOpen(false);
+    };
+
+    const addProduct = (product) => {
+        setProducts([...products, { ...product, id: Date.now() }]);
+        console.log("Product addedd:", product);
+        handleDateClick([...products, product]);
+    };
+
+    // Home 컴포넌트의 updateProduct 함수 수정
+    /*const updateProduct = (updatedProduct) => {
+  // 이전 상태를 가져와서 업데이트하는 함수형 업데이트 사용
+  setProducts(prevProducts => {
+    const updatedProducts = prevProducts.map(product =>
+      product.id === updatedProduct.id ? updatedProduct : product
+    );
+    console.log("Updated products state:", updatedProducts);
+    // 이 부분에서 handleDateClick을 호출할 때 updatedProducts를 전달해야 합니다.
+    handleDateClick(updatedProducts); // 업데이트된 상품 목록을 전달
+    return updatedProducts;
+  });
+};
+*/
+    const updateProduct = (updatedProduct) => {
+        setProducts((prevProducts) => {
+            const updatedProducts = prevProducts.map((product) =>
+                product.id === updatedProduct.id ? updatedProduct : product
+            );
+            console.log("Updated products state:", updatedProducts);
+            handleDateClick(updatedProducts); // 업데이트된 상품 목록을 전달
+            return updatedProducts;
+        });
+    };
+
+    /*
+const updateProduct = (updatedProduct) => {
+  setLocalProducts((prevProducts) => {
+    const updatedProducts = prevProducts.map((product) =>
+      product.id === updatedProduct.id ? updatedProduct : product
+    );
+    handleDateClick(dayjs(updatedProduct.expiryDate).date());// 업데이트된 상품 목록을 전달
+    console.log('Updated products state:', updatedProducts);
+    return updatedProducts;
+  });
+};*/
 
     const handleDateClick = (products) => {
         const today = dayjs();
@@ -173,7 +239,9 @@ function Home() {
         products.forEach((product) => {
             const expiryDate = dayjs(product.expiryDate);
             const diff = expiryDate.diff(today, "day");
-
+            console.log(
+                `Product: ${product.productName}, Expiry Date: ${product.expiryDate}, Days left: ${diff}`
+            );
             if (diff <= 1) {
                 dday1.push(product);
             } else if (diff <= 6) {
@@ -205,16 +273,19 @@ function Home() {
                             </Button>
                         </Link>
                     </ButtonContainer>
-                    <Calendar onDateClick={handleDateClick} />
+                    <Calendar
+                        onDateClick={handleDateClick}
+                        products={products}
+                    />
                 </ItemLayout>
                 <DateLayout>
                     <DdayImgContainer>
                         <ProductList>
                             {dday1Products.map((product, index) => (
-                                <ProductItem key={index}>
-                                    <Dday1img
-                                        src={Dday1}
-                                        alt="Dday1"></Dday1img>
+                                <ProductItem
+                                    key={index}
+                                    onClick={() => openEditModal(product)}>
+                                    <Dday1img src={Dday1} alt="Dday1" />
                                     <ProductDdayText>
                                         D-
                                         {dayjs(product.expiryDate).diff(
@@ -226,17 +297,19 @@ function Home() {
                                         {product.productName}
                                     </ProductNameText>
                                     <ProductEXPText>
-                                        EXP : {product.expiryDate}
+                                        EXP: {product.expiryDate}
                                     </ProductEXPText>
                                 </ProductItem>
                             ))}
                         </ProductList>
                     </DdayImgContainer>
-
                     <DdayImgContainer>
                         <ProductList>
                             {dday7Products.map((product, index) => (
-                                <ProductItem key={index}>
+                                <ProductItem
+                                    key={index}
+                                    onClick={() => openEditModal(product)}>
+                                    <Dday7img src={Dday7} alt="Dday7" />
                                     <ProductDdayText>
                                         D-
                                         {dayjs(product.expiryDate).diff(
@@ -248,18 +321,19 @@ function Home() {
                                         {product.productName}
                                     </ProductNameText>
                                     <ProductEXPText>
-                                        EXP : {product.expiryDate}
+                                        EXP: {product.expiryDate}
                                     </ProductEXPText>
-                                    <Dday7img src={Dday7} alt="Dday7" />
                                 </ProductItem>
                             ))}
                         </ProductList>
                     </DdayImgContainer>
-
                     <DdayImgContainer>
                         <ProductList>
                             {dday30Products.map((product, index) => (
-                                <ProductItem key={index}>
+                                <ProductItem
+                                    key={index}
+                                    onClick={() => openEditModal(product)}>
+                                    <Dday30img src={Dday30} alt="Dday30" />
                                     <ProductDdayText>
                                         D-
                                         {dayjs(product.expiryDate).diff(
@@ -271,10 +345,8 @@ function Home() {
                                         {product.productName}
                                     </ProductNameText>
                                     <ProductEXPText>
-                                        EXP : {product.expiryDate}
+                                        EXP: {product.expiryDate}
                                     </ProductEXPText>
-
-                                    <Dday30img src={Dday30} alt="Dday30" />
                                 </ProductItem>
                             ))}
                         </ProductList>
@@ -282,17 +354,18 @@ function Home() {
                     <ButtonAdd onClick={openModal}>
                         <ButtonImg src={IconAdd} />
                     </ButtonAdd>
-                    {/*<ButtonAdd 
-        onClick={() => setModalIsOpen(true)}>
-        <ButtonImg src = {IconAdd} />
-        </ButtonAdd>*/}
                 </DateLayout>
             </ContentLayout>
-
             <AddFoodModal
                 isOpen={modalIsOpen}
-                onRequestClose={() => setModalIsOpen(false)}
+                onRequestClose={closeModal}
                 addProduct={addProduct}
+            />
+            <EditFoodModal
+                isOpen={editModalIsOpen}
+                onRequestClose={closeEditModal}
+                product={selectedProduct}
+                updateProduct={updateProduct}
             />
         </Layout>
     );

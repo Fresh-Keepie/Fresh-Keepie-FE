@@ -194,4 +194,4 @@ const AddFoodModal = ({ isOpen, onRequestClose, addProduct }) => {
     );
 };
 
-export default AddFoodModal;
+export default MyModal;

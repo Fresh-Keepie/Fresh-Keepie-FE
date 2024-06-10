@@ -3,10 +3,11 @@ import { useState, useContext } from "react";
 import Topbar from "../components/Topbar";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useFetchMyBoardList, useFetchScrapBoardList } from "../utils/axios";
 
 const UserNameContext = React.createContext();
 export const UserNameProvider = ({ children }) => {
-    const [userName, setUserName] = useState("마숭숭");
+    const [userName, setUserName] = useState("hello");
     return (
         <UserNameContext.Provider value={{ userName, setUserName }}>
             {children}
@@ -34,9 +35,8 @@ const MyPageContainer = styled.div`
 `;
 function MyPage() {
     const { userName, setUserName } = useUserName();
-    const [userLoginID /*, setUserLoginID*/] = useState("masoongsoong1");
+    const [userLoginID /*, setUserLoginID*/] = useState("test@test.com");
     const [menuOption, setMenuOption] = useState(0); //0 : 개인정보 수정, 1 : 보관한 레시피, 2 : 스크랩한 글, 3 : 내가 쓴 글
-
     const inputStyle = {
         fontFamily: "APPLESDGOTHICNEO",
         border: "1.5px solid",
@@ -151,7 +151,7 @@ function MyPage() {
             width: 1150px;
             height: 650px;
             background-color: #05796b;
-            border-radius: 50px 0px 0px 0px;
+            border-radius: 50px 0px 0px 50px;
         `;
 
         return (
@@ -388,63 +388,7 @@ function MyPage() {
         }
         function ScrapList() {
             const navigate = useNavigate();
-            const dummyScrapData = {
-                data: {
-                    scrapList: [
-                        {
-                            post_id: 1,
-                            title: "1번 게시물 제목",
-                            createdAt: "2024-01-01",
-                        },
-                        {
-                            post_id: 202,
-                            title: "202번 게시물 제목",
-                            createdAt: "2024-01-01",
-                        },
-                        {
-                            post_id: 301,
-                            title: "301번 더미 데이터",
-                            createdAt: "2024-01-01",
-                        },
-                        {
-                            post_id: 322,
-                            title: "322번 더미 데이터",
-                            createdAt: "2024-01-01",
-                        },
-                        {
-                            post_id: 322,
-                            title: "322번 더미 데이터",
-                            createdAt: "2024-01-01",
-                        },
-                        {
-                            post_id: 322,
-                            title: "322번 더미 데이터",
-                            createdAt: "2024-01-01",
-                        },
-                        {
-                            post_id: 322,
-                            title: "322번 더미 데이터",
-                            createdAt: "2024-01-01",
-                        },
-                        {
-                            post_id: 322,
-                            title: "322번 더미 데이터",
-                            createdAt: "2024-01-01",
-                        },
-                        {
-                            post_id: 322,
-                            title: "322번 더미 데이터",
-                            createdAt: "2024-01-01",
-                        },
-                        {
-                            post_id: 322,
-                            title: "322번 더미 데이터",
-                            createdAt: "2024-01-01",
-                        },
-                    ],
-                },
-            };
-            const scrapListData = dummyScrapData;
+            const ScrapPostListData = useFetchScrapBoardList();
             const ScrapContainer = styled.div`
                 box-sizing: border-box;
                 width: 100%;
@@ -506,99 +450,44 @@ function MyPage() {
                             작성일
                         </div>
                     </ScrapContent>
-                    {scrapListData.data.scrapList.map((value, index) => {
-                        return (
-                            <>
-                                <ScrapContent
-                                    onClick={() => {
-                                        navigate("/community/" + value.post_id);
-                                    }}>
-                                    <div
-                                        style={{
-                                            width: "10%",
-                                            display: "flex",
-                                            justifyContent: "center",
+                    {ScrapPostListData &&
+                        ScrapPostListData.map((value) => {
+                            return (
+                                <>
+                                    <ScrapContent
+                                        onClick={() => {
+                                            navigate("/community/" + value.id);
                                         }}>
-                                        {value.post_id}
-                                    </div>
-                                    <div style={{ width: "65%" }}>
-                                        {value.title}
-                                    </div>
-                                    <div
-                                        style={{
-                                            width: "25%",
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            fontSize: 20,
-                                        }}>
-                                        {value.createdAt}
-                                    </div>
-                                </ScrapContent>
-                            </>
-                        );
-                    })}
+                                        <div
+                                            style={{
+                                                width: "10%",
+                                                display: "flex",
+                                                justifyContent: "center",
+                                            }}>
+                                            {value.id}
+                                        </div>
+                                        <div style={{ width: "65%" }}>
+                                            {value.title}
+                                        </div>
+                                        <div
+                                            style={{
+                                                width: "25%",
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                fontSize: 20,
+                                            }}>
+                                            {value.createdAt.split("T")[0]}
+                                        </div>
+                                    </ScrapContent>
+                                </>
+                            );
+                        })}
                 </ScrapContainer>
             );
         }
         function MyPostList() {
             const navigate = useNavigate();
-            const dummyMyPostData = {
-                data: {
-                    MyPostList: [
-                        {
-                            post_id: 1,
-                            title: "1번 게시물 제목",
-                            createdAt: "2024-01-01",
-                        },
-                        {
-                            post_id: 202,
-                            title: "202번 게시물 제목",
-                            createdAt: "2024-01-01",
-                        },
-                        {
-                            post_id: 301,
-                            title: "301번 더미 데이터",
-                            createdAt: "2024-01-01",
-                        },
-                        {
-                            post_id: 322,
-                            title: "322번 더미 데이터",
-                            createdAt: "2024-01-01",
-                        },
-                        {
-                            post_id: 322,
-                            title: "322번 더미 데이터",
-                            createdAt: "2024-01-01",
-                        },
-                        {
-                            post_id: 322,
-                            title: "322번 더미 데이터",
-                            createdAt: "2024-01-01",
-                        },
-                        {
-                            post_id: 322,
-                            title: "322번 더미 데이터",
-                            createdAt: "2024-01-01",
-                        },
-                        {
-                            post_id: 322,
-                            title: "322번 더미 데이터",
-                            createdAt: "2024-01-01",
-                        },
-                        {
-                            post_id: 322,
-                            title: "322번 더미 데이터",
-                            createdAt: "2024-01-01",
-                        },
-                        {
-                            post_id: 322,
-                            title: "322번 더미 데이터",
-                            createdAt: "2024-01-01",
-                        },
-                    ],
-                },
-            };
-            const MyPostListData = dummyMyPostData;
+            const MyPostListData = useFetchMyBoardList();
             const MyPostContainer = styled.div`
                 box-sizing: border-box;
                 width: 100%;
@@ -660,37 +549,38 @@ function MyPage() {
                             작성일
                         </div>
                     </MyPostContent>
-                    {MyPostListData.data.MyPostList.map((value, index) => {
-                        return (
-                            <>
-                                <MyPostContent
-                                    onClick={() => {
-                                        navigate("/community/" + value.post_id);
-                                    }}>
-                                    <div
-                                        style={{
-                                            width: "10%",
-                                            display: "flex",
-                                            justifyContent: "center",
+                    {MyPostListData &&
+                        MyPostListData.map((value) => {
+                            return (
+                                <>
+                                    <MyPostContent
+                                        onClick={() => {
+                                            navigate("/community/" + value.id);
                                         }}>
-                                        {value.post_id}
-                                    </div>
-                                    <div style={{ width: "65%" }}>
-                                        {value.title}
-                                    </div>
-                                    <div
-                                        style={{
-                                            width: "25%",
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            fontSize: 20,
-                                        }}>
-                                        {value.createdAt}
-                                    </div>
-                                </MyPostContent>
-                            </>
-                        );
-                    })}
+                                        <div
+                                            style={{
+                                                width: "10%",
+                                                display: "flex",
+                                                justifyContent: "center",
+                                            }}>
+                                            {value.id}
+                                        </div>
+                                        <div style={{ width: "65%" }}>
+                                            {value.title}
+                                        </div>
+                                        <div
+                                            style={{
+                                                width: "25%",
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                fontSize: 20,
+                                            }}>
+                                            {value.createdAt.split("T")[0]}
+                                        </div>
+                                    </MyPostContent>
+                                </>
+                            );
+                        })}
                 </MyPostContainer>
             );
         }

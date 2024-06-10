@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-//import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import styled from "styled-components";
 import Topbar from "../components/Topbar";
 import IconSearch from "../assets/images/IconSearch.svg";
-//import IconRecipe from "../assets/images/layout.svg";
+/* import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import IconRecipe from "../assets/images/layout.svg"; */
 import RecipeItem from "../store/dummyFile";
 import { useParams } from "react-router-dom";
 
@@ -77,7 +77,6 @@ const RecipeLayout1 = styled.div`
     display: flex;
     flex-direction: column;
     margin-top: 10px;
-    padding-bottom: 30px;
 `;
 const RecipeLayout2 = styled.div`
     width: 1200px;
@@ -89,7 +88,7 @@ const RecipeLayout2 = styled.div`
     margin-top: 10px;
     padding-bottom: 30px;
 `;
-/*const ItemLayout = styled.div`
+/* const ItemLayout = styled.div`
     width: 378.603px;
     height: 288px;
     border-radius: 30px;
@@ -103,8 +102,8 @@ const RecipeLayout2 = styled.div`
     margin-right: 10px;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     //width: calc(25% - 20px);
-`;
-*/
+`; */
+
 const RecipeImage = styled.img`
     display: block; /* 이미지를 블록 요소로 표시하여 수평 중앙 정렬을 위한 auto margin을 사용할 수 있게 합니다. */
     margin: 10px auto;
@@ -122,12 +121,11 @@ const RecipeText = styled.span`
     margin-top: 20px;
     font-size: 30px;
 `;
-/*
-const Title = styled.div`
+/* const Title = styled.div`
     margin-top: 45px;
     font-size: 25px;
     margin-left: 40px;
-`;*/
+`; */
 const Material = styled.div`
     display: flex;
     flex-direction: row;
@@ -153,6 +151,7 @@ const LayoutTitle = styled.div`
     justify-content: center;
     align-items: center;
     text-align: center;
+    font-weight: 600;
 `;
 
 const Order = styled.div`
@@ -162,6 +161,10 @@ const Order = styled.div`
     margin-left: 100px;
 `;
 
+const MainContainer = styled.div`
+    font-family: "APPLESDGOTHICNEO";
+    margin-bottom: 50px;
+`;
 function RecipeDetail() {
     const [query, setQuery] = useState("");
 
@@ -178,6 +181,7 @@ function RecipeDetail() {
     return (
         <Layout>
             <Topbar />
+
             <SearchBar>
                 <SearchingInput
                     type="text"
@@ -189,29 +193,31 @@ function RecipeDetail() {
                     <SearchImg src={IconSearch} alt="검색" />
                 </SearchButton>
             </SearchBar>
-            <RecipeLayout>
-                <RecipeImage src={recipe.image} alt={recipe.text} />
-                <RecipeText>{recipe.title}</RecipeText>
-            </RecipeLayout>
-            <Material>
-                <RecipeLayout1>
-                    <LayoutTitle>재료(1인분)</LayoutTitle>
+            <MainContainer>
+                <RecipeLayout>
+                    <RecipeImage src={recipe.image} alt={recipe.text} />
+                    <RecipeText>{recipe.title}</RecipeText>
+                </RecipeLayout>
+                <Material>
+                    <RecipeLayout1>
+                        <LayoutTitle>재료(1인분)</LayoutTitle>
 
-                    <Ingredient>
-                        {recipe.ingredients.map((ingredient, index) => (
-                            <div key={index}>
-                                {ingredient.name} - {ingredient.quantity}
-                            </div>
+                        <Ingredient>
+                            {recipe.ingredients.map((ingredient, index) => (
+                                <div key={index}>
+                                    {ingredient.name} - {ingredient.quantity}
+                                </div>
+                            ))}
+                        </Ingredient>
+                    </RecipeLayout1>
+                    <RecipeLayout2>
+                        <LayoutTitle>조리순서</LayoutTitle>
+                        {recipe.steps.map((step, index) => (
+                            <Order key={index}>{step}</Order>
                         ))}
-                    </Ingredient>
-                </RecipeLayout1>
-                <RecipeLayout2>
-                    <LayoutTitle>조리순서</LayoutTitle>
-                    {recipe.steps.map((step, index) => (
-                        <Order key={index}>{step}</Order>
-                    ))}
-                </RecipeLayout2>
-            </Material>
+                    </RecipeLayout2>
+                </Material>
+            </MainContainer>
         </Layout>
     );
 }
