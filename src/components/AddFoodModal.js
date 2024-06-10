@@ -109,7 +109,8 @@ const AddText = styled.span`
   z-index: 2;
   color: white;
   font-size: 16px;
-`;Modal.setAppElement('#root');
+`;
+Modal.setAppElement('#root');
 
 const AddFoodModal = ({ isOpen, onRequestClose, addProduct }) => {
   const [productName, setProductName] = useState('');
@@ -123,9 +124,16 @@ const AddFoodModal = ({ isOpen, onRequestClose, addProduct }) => {
       return;
     }
 
-    const data = JSON.stringify({
+    const newProduct = {
       productName: productName,
-      amount: parseInt(quantity, 10),
+      expiryDate: expiryDate,
+      quantity: parseInt(quantity, 10),
+      id: Date.now()
+    };
+
+    const data = JSON.stringify({
+      productName: newProduct.productName,
+      amount: newProduct.quantity,
       userId: 'sunny' // 유저 ID를 하드코딩
     });
 
@@ -144,7 +152,32 @@ const AddFoodModal = ({ isOpen, onRequestClose, addProduct }) => {
       console.log('서버 응답:', response.data);
 
       if (response.data.message === 'success') {
-        addProduct({ productName, expiryDate, quantity });
+        // 로컬 스토리지에서 데이터 가져오기
+        let existingProducts = localStorage.getItem('products');
+
+        // 데이터가 존재하지 않거나 배열이 아닐 경우 빈 배열로 초기화
+        if (!existingProducts) {
+          existingProducts = [];
+        } else {
+          // 데이터가 배열 형태인지 확인하고 배열로 변환
+          try {
+            existingProducts = JSON.parse(existingProducts);
+
+            // 데이터가 배열인지 다시 확인
+            if (!Array.isArray(existingProducts)) {
+              existingProducts = [];
+            }
+          } catch (e) {
+            // 파싱 오류 발생 시 빈 배열로 초기화
+            existingProducts = [];
+          }
+        }
+
+        // 새로운 상품 추가
+        existingProducts.push(newProduct);
+        localStorage.setItem('products', JSON.stringify(existingProducts));
+
+        addProduct(newProduct);
         setProductName('');
         setExpiryDate('');
         setQuantity('');

@@ -184,7 +184,7 @@ const Calendar = ({ onDateClick, products }) => {
                 dayjs(product.expiryDate).isSame(currentDate, "month") &&
                 dayjs(product.expiryDate).date() === day
         );
-        onDateClick(dayProducts);
+       onDateClick(dayProducts);
         console.log("Date clicked:", day);
     };
 

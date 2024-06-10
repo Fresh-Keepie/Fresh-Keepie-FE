@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
 import styled from "styled-components";
@@ -163,13 +163,23 @@ function Home() {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [editModalIsOpen, setEditModalIsOpen] = useState(false);
     const [products, setProducts] = useState([]);
-
-    /* const [localProducts, setLocalProducts] = useState([]);
-    const [itemsForDate, setItemsForDate] = useState({}); */
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [dday1Products, setDday1Products] = useState([]);
     const [dday7Products, setDday7Products] = useState([]);
     const [dday30Products, setDday30Products] = useState([]);
+
+    useEffect(() => {
+        // 로컬 스토리지에서 데이터 로드
+        let storedProducts = JSON.parse(localStorage.getItem('products')) || [];
+        
+        // 데이터가 배열인지 확인
+        if (!Array.isArray(storedProducts)) {
+            storedProducts = [];
+        }
+
+        setProducts(storedProducts);
+        handleDateClick(storedProducts);
+    }, []);
 
     const openModal = () => {
         setModalIsOpen(true);
@@ -189,47 +199,27 @@ function Home() {
     };
 
     const addProduct = (product) => {
-        setProducts([...products, { ...product, id: Date.now() }]);
-        console.log("Product addedd:", product);
-        handleDateClick([...products, product]);
+        // 기존 products에 새로운 product 추가
+        const updatedProducts = [...products, product];
+        setProducts(updatedProducts);
+
+        // 로컬 스토리지 업데이트
+        localStorage.setItem('products', JSON.stringify(updatedProducts));
+
+        handleDateClick(updatedProducts);
     };
 
-    // Home 컴포넌트의 updateProduct 함수 수정
-    /*const updateProduct = (updatedProduct) => {
-  // 이전 상태를 가져와서 업데이트하는 함수형 업데이트 사용
-  setProducts(prevProducts => {
-    const updatedProducts = prevProducts.map(product =>
-      product.id === updatedProduct.id ? updatedProduct : product
-    );
-    console.log("Updated products state:", updatedProducts);
-    // 이 부분에서 handleDateClick을 호출할 때 updatedProducts를 전달해야 합니다.
-    handleDateClick(updatedProducts); // 업데이트된 상품 목록을 전달
-    return updatedProducts;
-  });
-};
-*/
     const updateProduct = (updatedProduct) => {
-        setProducts((prevProducts) => {
-            const updatedProducts = prevProducts.map((product) =>
-                product.id === updatedProduct.id ? updatedProduct : product
-            );
-            console.log("Updated products state:", updatedProducts);
-            handleDateClick(updatedProducts); // 업데이트된 상품 목록을 전달
-            return updatedProducts;
-        });
-    };
+        const updatedProducts = products.map((product) =>
+            product.id === updatedProduct.id ? updatedProduct : product
+        );
+        setProducts(updatedProducts);
 
-    /*
-const updateProduct = (updatedProduct) => {
-  setLocalProducts((prevProducts) => {
-    const updatedProducts = prevProducts.map((product) =>
-      product.id === updatedProduct.id ? updatedProduct : product
-    );
-    handleDateClick(dayjs(updatedProduct.expiryDate).date());// 업데이트된 상품 목록을 전달
-    console.log('Updated products state:', updatedProducts);
-    return updatedProducts;
-  });
-};*/
+        // 로컬 스토리지 업데이트
+        localStorage.setItem('products', JSON.stringify(updatedProducts));
+
+        handleDateClick(updatedProducts);
+    };
 
     const handleDateClick = (products) => {
         const today = dayjs();
@@ -239,9 +229,6 @@ const updateProduct = (updatedProduct) => {
         products.forEach((product) => {
             const expiryDate = dayjs(product.expiryDate);
             const diff = expiryDate.diff(today, "day");
-            console.log(
-                `Product: ${product.productName}, Expiry Date: ${product.expiryDate}, Days left: ${diff}`
-            );
             if (diff <= 1) {
                 dday1.push(product);
             } else if (diff <= 6) {
@@ -287,11 +274,7 @@ const updateProduct = (updatedProduct) => {
                                     onClick={() => openEditModal(product)}>
                                     <Dday1img src={Dday1} alt="Dday1" />
                                     <ProductDdayText>
-                                        D-
-                                        {dayjs(product.expiryDate).diff(
-                                            dayjs(),
-                                            "day"
-                                        ) + 1}
+                                        D-{dayjs(product.expiryDate).diff(dayjs(), "day") + 1}
                                     </ProductDdayText>
                                     <ProductNameText>
                                         {product.productName}
@@ -311,11 +294,7 @@ const updateProduct = (updatedProduct) => {
                                     onClick={() => openEditModal(product)}>
                                     <Dday7img src={Dday7} alt="Dday7" />
                                     <ProductDdayText>
-                                        D-
-                                        {dayjs(product.expiryDate).diff(
-                                            dayjs(),
-                                            "day"
-                                        ) + 1}
+                                        D-{dayjs(product.expiryDate).diff(dayjs(), "day") + 1}
                                     </ProductDdayText>
                                     <ProductNameText>
                                         {product.productName}
@@ -335,11 +314,7 @@ const updateProduct = (updatedProduct) => {
                                     onClick={() => openEditModal(product)}>
                                     <Dday30img src={Dday30} alt="Dday30" />
                                     <ProductDdayText>
-                                        D-
-                                        {dayjs(product.expiryDate).diff(
-                                            dayjs(),
-                                            "day"
-                                        ) + 1}
+                                        D-{dayjs(product.expiryDate).diff(dayjs(), "day") + 1}
                                     </ProductDdayText>
                                     <ProductNameText>
                                         {product.productName}
