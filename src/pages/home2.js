@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import styled from "styled-components";
+import React, { useState, useEffect} from "react";
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import {useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import Topbar from "../components/Topbar";
 //import Calendar from "../components/Calendar";
 import Dday1 from "../assets/images/dday1.svg";
@@ -9,12 +10,13 @@ import Dday30 from "../assets/images/dday30.svg";
 import MyModal from "../components/AddFoodModal.js";
 import AddFridgeModal from "../components/AddFrigeModal.js"; // Add this import
 import IconAdd from "../assets/images/IconAdd.svg";
-import dayjs from "dayjs";
-//import IconDday from '../assets/images/ddaycontainer.svg';
-import IconRefr from "../assets/images/IconRefrigerator.svg";
-import IconCal from "../assets/images/IconCalendar.svg";
-import MyRefri from "../assets/images/Refrigerator.svg";
-import IconAdds from "../assets/images/Plus.svg";
+import dayjs from 'dayjs';
+import IconDday from '../assets/images/ddaycontainer.svg';
+import IconRefr from '../assets/images/IconRefrigerator.svg';
+import IconCal from '../assets/images/IconCalendar.svg';
+import MyRefri from '../assets/images/Refrigerator.svg';
+import IconAdds from '../assets/images/Plus.svg'
+import axios from 'axios'
 const Layout = styled.div`
     display: flex;
     flex-direction: column;
@@ -193,11 +195,73 @@ const FridgeButton = styled.button`
 `;
 
 function Home2() {
-    const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [fridgeModalIsOpen, setFridgeModalIsOpen] = useState(false);
-    const [products, setProducts] = useState({});
-    const [fridges, setFridges] = useState([{ id: 1, name: "나의 냉장고 1" }]);
-    const [selectedFridgeId, setSelectedFridgeId] = useState(fridges[0].id); // Default to first fridge
+  const navigate = useNavigate();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [fridgeModalIsOpen, setFridgeModalIsOpen] = useState(false);
+  const [products, setProducts] = useState({});
+  const [fridges, setFridges] = useState([]);
+  const [selectedFridgeId, setSelectedFridgeId] = useState(null);
+
+  const user_id = 9; // 하드코딩된 user_id
+
+  useEffect(() => {
+    const storedFridges = localStorage.getItem('fridges');
+    const storedProducts = localStorage.getItem('products');
+
+    if (storedFridges) {
+      const parsedFridges = JSON.parse(storedFridges);
+      setFridges(parsedFridges);
+      setSelectedFridgeId(parsedFridges[0]?.id || null);
+    }
+
+    if (storedProducts) {
+      setProducts(JSON.parse(storedProducts));
+    }
+  }, []);
+
+  const saveFridgesToLocalStorage = (fridges) => {
+    localStorage.setItem('fridges', JSON.stringify(fridges));
+  };
+
+  const saveProductsToLocalStorage = (products) => {
+    localStorage.setItem('products', JSON.stringify(products));
+  };
+
+  const fetchFridgeList = async () => {
+    try {
+      const response = await axios.get('http://13.125.120.108:8080/product/fridge/list', {
+        headers: {
+          'Content-Type': 'application/json',
+          'user_id': user_id // 하드코딩된 user_id 사용
+        }
+      });
+
+      console.log('Fridge List Response:', response.data);
+
+      if (response.data.message === 'SUCCESS') {
+        const fridgeList = response.data.fridgeList;
+        if (fridgeList && fridgeList.length > 0) {
+          setFridges(fridgeList);
+          setSelectedFridgeId(fridgeList[0].id); // 첫 번째 냉장고 ID를 선택
+          saveFridgesToLocalStorage(fridgeList); // 로컬스토리지에 저장
+        } else {
+          console.warn('No fridges found.');
+        }
+      } else {
+        console.error('Failed to fetch fridge list:', response.data);
+      }
+    } catch (error) {
+      if (error.response) {
+        console.error('Failed to fetch fridge list:', error.response.data);
+      } else {
+        console.error('Failed to fetch fridge list:', error.message);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchFridgeList();
+  }, [user_id]);
 
     const openModal = () => {
         setModalIsOpen(true);
@@ -215,21 +279,24 @@ function Home2() {
         setFridgeModalIsOpen(false);
     };
 
-    const addProduct = (product) => {
-        setProducts({
-            ...products,
-            [selectedFridgeId]: [
-                ...(products[selectedFridgeId] || []),
-                product,
-            ],
-        });
-    };
+  const addProduct = (product) => {
+    if (selectedFridgeId !== null) {
+      const updatedProducts = {
+        ...products,
+        [selectedFridgeId]: [...(products[selectedFridgeId] || []), product],
+      };
+      setProducts(updatedProducts);
+      saveProductsToLocalStorage(updatedProducts);
+    }
+  };
 
-    const addFridge = (fridge) => {
-        const newFridge = { id: fridges.length + 1, name: fridge.name };
-        setFridges([...fridges, newFridge]);
-        setProducts({ ...products, [newFridge.id]: [] });
-    };
+  const addFridge = (fridge) => {
+    const newFridge = { id: fridges.length + 1, name: fridge.name };
+    const updatedFridges = [...fridges, newFridge];
+    setFridges(updatedFridges);
+    setSelectedFridgeId(newFridge.id);
+    saveFridgesToLocalStorage(updatedFridges); // 로컬스토리지에 저장
+  };
 
     const selectFridge = (id) => {
         setSelectedFridgeId(id);
@@ -253,117 +320,119 @@ function Home2() {
             dayjs(product.expiryDate).diff(dayjs(), "day") <= 30
     );
 
-    return (
-        <Layout>
-            <Topbar />
-            <ContentLayout>
-                <ItemLayout>
-                    <ButtonContainer>
-                        <Link to="/home">
-                            <Button>
-                                <ButtonImg src={IconCal} />
-                            </Button>
-                        </Link>
-                        <Link to="/home2">
-                            <Button>
-                                <ButtonImg src={IconRefr} />
-                            </Button>
-                        </Link>
-                    </ButtonContainer>
-                    <FridgeButton onClick={openFridgeModal}>
-                        <ButtonImg src={IconAdds} />
-                    </FridgeButton>
-                    <RefriBox>
-                        {fridges.map((fridge) => (
-                            <RefriItem
-                                key={fridge.id}
-                                onClick={() => selectFridge(fridge.id)}>
-                                <RefriImg src={MyRefri} />
-                                <RefriText>{fridge.name}</RefriText>
-                            </RefriItem>
+  return (
+    <Layout>
+      <Topbar />
+     {/*<button onClick={() => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('fridges');
+        localStorage.removeItem('products');
+        navigate('/login');
+      }}>Logout</button>*/}
+      <ContentLayout>
+        <ItemLayout>
+          <ButtonContainer>
+            <Link to="/home">
+              <Button>
+                <img src={IconCal} alt="Calendar" />
+              </Button>
+            </Link>
+            <Link to="/home2">
+              <Button>
+                <img src={IconRefr} alt="Refrigerator" />
+              </Button>
+            </Link>
+          </ButtonContainer>
+          <FridgeButton onClick={openFridgeModal}>
+            <img src={IconAdds} alt="Add" />
+          </FridgeButton>
+          <RefriBox>
+            {fridges.map((fridge) => (
+              <RefriItem key={fridge.id} onClick={() => selectFridge(fridge.id)}>
+                <RefriImg src={MyRefri} alt="Refrigerator" />
+                <RefriText>{fridge.name}</RefriText>
+              </RefriItem>
+            ))}
+          </RefriBox>
+        </ItemLayout>
+        <DateLayout>
+                <DdayImgContainer>
+                    <ProductList>
+                        {dday1Products.map((product, index) => (
+                            <ProductItem key={index}>
+                                <Dday1img src={Dday1} alt="Dday1" />
+                                <ProductDdayText>
+                                    D-
+                                    {dayjs(product.expiryDate).diff(
+                                        dayjs(),
+                                        "day"
+                                    ) + 1}
+                                </ProductDdayText>
+                                <ProductNameText>
+                                    {product.productName}
+                                </ProductNameText>
+                                <ProductEXPText>
+                                    EXP : {product.expiryDate}
+                                </ProductEXPText>
+                            </ProductItem>
                         ))}
-                    </RefriBox>
-                </ItemLayout>
-                <DateLayout>
-                    <DdayImgContainer>
-                        <ProductList>
-                            {dday1Products.map((product, index) => (
-                                <ProductItem key={index}>
-                                    <Dday1img src={Dday1} alt="Dday1" />
-                                    <ProductDdayText>
-                                        D-
-                                        {dayjs(product.expiryDate).diff(
-                                            dayjs(),
-                                            "day"
-                                        ) + 1}
-                                    </ProductDdayText>
-                                    <ProductNameText>
-                                        {product.productName}
-                                    </ProductNameText>
-                                    <ProductEXPText>
-                                        EXP : {product.expiryDate}
-                                    </ProductEXPText>
-                                </ProductItem>
-                            ))}
-                        </ProductList>
-                        <ProductList>
-                            {dday7Products.map((product, index) => (
-                                <ProductItem key={index}>
-                                    <ProductDdayText>
-                                        D-
-                                        {dayjs(product.expiryDate).diff(
-                                            dayjs(),
-                                            "day"
-                                        ) + 1}
-                                    </ProductDdayText>
-                                    <ProductNameText>
-                                        {product.productName}
-                                    </ProductNameText>
-                                    <ProductEXPText>
-                                        EXP : {product.expiryDate}
-                                    </ProductEXPText>
-                                    <Dday7img src={Dday7} alt="Dday7" />
-                                </ProductItem>
-                            ))}
-                        </ProductList>
-                        <ProductList>
-                            {dday30Products.map((product, index) => (
-                                <ProductItem key={index}>
-                                    <ProductDdayText>
-                                        D-
-                                        {dayjs(product.expiryDate).diff(
-                                            dayjs(),
-                                            "day"
-                                        ) + 1}
-                                    </ProductDdayText>
-                                    <ProductNameText>
-                                        {product.productName}
-                                    </ProductNameText>
-                                    <ProductEXPText>
-                                        EXP : {product.expiryDate}
-                                    </ProductEXPText>
-                                    <Dday30img src={Dday30} alt="Dday30" />
-                                </ProductItem>
-                            ))}
-                        </ProductList>
-                    </DdayImgContainer>
-                    <ButtonAdd onClick={openModal}>
-                        <ButtonImg src={IconAdd} />
-                    </ButtonAdd>
-                </DateLayout>
-            </ContentLayout>
-            <MyModal
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                addProduct={addProduct}
-            />
-            <AddFridgeModal
-                isOpen={fridgeModalIsOpen}
-                onRequestClose={closeFridgeModal}
-                addFridge={addFridge}
-            />
-        </Layout>
-    );
+                    </ProductList>
+                    <ProductList>
+                        {dday7Products.map((product, index) => (
+                            <ProductItem key={index}>
+                                <ProductDdayText>
+                                    D-
+                                    {dayjs(product.expiryDate).diff(
+                                        dayjs(),
+                                        "day"
+                                    ) + 1}
+                                </ProductDdayText>
+                                <ProductNameText>
+                                    {product.productName}
+                                </ProductNameText>
+                                <ProductEXPText>
+                                    EXP : {product.expiryDate}
+                                </ProductEXPText>
+                                <Dday7img src={Dday7} alt="Dday7" />
+                            </ProductItem>
+                        ))}
+                    </ProductList>
+                    <ProductList>
+                        {dday30Products.map((product, index) => (
+                            <ProductItem key={index}>
+                                <ProductDdayText>
+                                    D-
+                                    {dayjs(product.expiryDate).diff(
+                                        dayjs(),
+                                        "day"
+                                    ) + 1}
+                                </ProductDdayText>
+                                <ProductNameText>
+                                    {product.productName}
+                                </ProductNameText>
+                                <ProductEXPText>
+                                    EXP : {product.expiryDate}
+                                </ProductEXPText>
+                                <Dday30img src={Dday30} alt="Dday30" />
+                            </ProductItem>
+                        ))}
+                    </ProductList>
+                </DdayImgContainer>
+                <ButtonAdd onClick={openModal}>
+                    <ButtonImg src={IconAdd} />
+                </ButtonAdd>
+            </DateLayout>
+
+      </ContentLayout>
+      <MyModal isOpen={modalIsOpen} onRequestClose={closeModal} addProduct={addProduct} />
+      <AddFridgeModal
+        isOpen={fridgeModalIsOpen}
+        onRequestClose={closeFridgeModal}
+        addFridge={addFridge}
+        userId='sunny' // userId를 'sunny'로 고정
+      />
+    </Layout>
+  );
 }
 
 export default Home2;
