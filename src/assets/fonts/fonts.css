@@ -24,3 +24,12 @@
     font-weight: 400;
     font-style: normal;
 }
+
+@font-face {
+    /* 사용할 폰트의 이름 */
+    font-family: "Ownglyph-meetme";
+    font-display: fallback;
+    src: url("./Ownglyph-meetme.woff") format("woff");
+    font-weight: 400;
+    font-style: normal;
+}

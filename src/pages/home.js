@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 import styled from "styled-components";
 import Topbar from "../components/Topbar";
@@ -34,12 +34,14 @@ const ContentLayout = styled.div`
 `;
 
 const ItemLayout = styled.div`
-    width: 900px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    width: 950px;
     height: 903px;
     flex-shrink: 0;
     border-radius: 50px;
     background: rgba(168, 209, 204, 0.2);
-    margin-left: 20px;
     flex-shrink: 0;
 `;
 
@@ -101,6 +103,7 @@ const ProductList = styled.div`
 const DdayImgContainer = styled.div``;
 
 const ButtonContainer = styled.div`
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -120,10 +123,10 @@ const ProductNameText = styled.div`
     left: 50%;
     transform: translateX(-50%);
     color: white;
-    font-family: "Ownglyph meetme";
+    font-family: "Ownglyph-meetme";
     font-size: 32px;
     font-style: normal;
-    font-weight: 400;
+    font-weight: 600;
     line-height: normal;
 `;
 
@@ -160,13 +163,23 @@ function Home() {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [editModalIsOpen, setEditModalIsOpen] = useState(false);
     const [products, setProducts] = useState([]);
-
-    /* const [localProducts, setLocalProducts] = useState([]);
-    const [itemsForDate, setItemsForDate] = useState({}); */
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [dday1Products, setDday1Products] = useState([]);
     const [dday7Products, setDday7Products] = useState([]);
     const [dday30Products, setDday30Products] = useState([]);
+
+    useEffect(() => {
+        // 로컬 스토리지에서 데이터 로드
+        let storedProducts = JSON.parse(localStorage.getItem("products")) || [];
+
+        // 데이터가 배열인지 확인
+        if (!Array.isArray(storedProducts)) {
+            storedProducts = [];
+        }
+
+        setProducts(storedProducts);
+        handleDateClick(storedProducts);
+    }, []);
 
     const openModal = () => {
         setModalIsOpen(true);
@@ -186,47 +199,27 @@ function Home() {
     };
 
     const addProduct = (product) => {
-        setProducts([...products, { ...product, id: Date.now() }]);
-        console.log("Product addedd:", product);
-        handleDateClick([...products, product]);
+        // 기존 products에 새로운 product 추가
+        const updatedProducts = [...products, product];
+        setProducts(updatedProducts);
+
+        // 로컬 스토리지 업데이트
+        localStorage.setItem("products", JSON.stringify(updatedProducts));
+
+        handleDateClick(updatedProducts);
     };
 
-    // Home 컴포넌트의 updateProduct 함수 수정
-    /*const updateProduct = (updatedProduct) => {
-  // 이전 상태를 가져와서 업데이트하는 함수형 업데이트 사용
-  setProducts(prevProducts => {
-    const updatedProducts = prevProducts.map(product =>
-      product.id === updatedProduct.id ? updatedProduct : product
-    );
-    console.log("Updated products state:", updatedProducts);
-    // 이 부분에서 handleDateClick을 호출할 때 updatedProducts를 전달해야 합니다.
-    handleDateClick(updatedProducts); // 업데이트된 상품 목록을 전달
-    return updatedProducts;
-  });
-};
-*/
     const updateProduct = (updatedProduct) => {
-        setProducts((prevProducts) => {
-            const updatedProducts = prevProducts.map((product) =>
-                product.id === updatedProduct.id ? updatedProduct : product
-            );
-            console.log("Updated products state:", updatedProducts);
-            handleDateClick(updatedProducts); // 업데이트된 상품 목록을 전달
-            return updatedProducts;
-        });
-    };
+        const updatedProducts = products.map((product) =>
+            product.id === updatedProduct.id ? updatedProduct : product
+        );
+        setProducts(updatedProducts);
 
-    /*
-const updateProduct = (updatedProduct) => {
-  setLocalProducts((prevProducts) => {
-    const updatedProducts = prevProducts.map((product) =>
-      product.id === updatedProduct.id ? updatedProduct : product
-    );
-    handleDateClick(dayjs(updatedProduct.expiryDate).date());// 업데이트된 상품 목록을 전달
-    console.log('Updated products state:', updatedProducts);
-    return updatedProducts;
-  });
-};*/
+        // 로컬 스토리지 업데이트
+        localStorage.setItem("products", JSON.stringify(updatedProducts));
+
+        handleDateClick(updatedProducts);
+    };
 
     const handleDateClick = (products) => {
         const today = dayjs();
@@ -236,9 +229,6 @@ const updateProduct = (updatedProduct) => {
         products.forEach((product) => {
             const expiryDate = dayjs(product.expiryDate);
             const diff = expiryDate.diff(today, "day");
-            console.log(
-                `Product: ${product.productName}, Expiry Date: ${product.expiryDate}, Days left: ${diff}`
-            );
             if (diff <= 1) {
                 dday1.push(product);
             } else if (diff <= 6) {

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import Modal from "react-modal";
 import styled from "styled-components";
 import IconClose from "../assets/images/IconClose.svg";
@@ -41,7 +42,6 @@ const Input = styled.input`
     font-size: 16px;
     border-radius: 10px;
     border: 1px solid #ccc;
-
     text-align: center;
 `;
 
@@ -71,25 +71,60 @@ const AddText = styled.span`
     color: white;
     font-size: 16px;
 `;
-/* 
-const Button = styled.button`
+
+const Error = styled.div`
+    color: red;
+    text-align: center;
     margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-`; */
+`;
 
-const AddFridgeModal = ({ isOpen, onRequestClose, addFridge }) => {
+const AddFridgeModal = ({ isOpen, onRequestClose, addFridge, userId }) => {
     const [fridgeName, setFridgeName] = useState("");
+    const [error, setError] = useState("");
 
-    const handleAddFridge = () => {
-        if (fridgeName.trim()) {
-            addFridge({ name: fridgeName });
-            setFridgeName("");
-            onRequestClose();
+    const handleAddFridge = async () => {
+        if (!fridgeName.trim()) {
+            setError("냉장고 이름을 입력하세요.");
+            return;
+        }
+
+        const data = {
+            userId: "sunny",
+            name: fridgeName,
+        };
+
+        const config = {
+            method: "post",
+            url: "http://13.125.120.108:8080/product/fridge",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            data: JSON.stringify(data),
+        };
+
+        try {
+            const response = await axios.request(config);
+            console.log("서버 응답:", response.data);
+
+            if (response.data.message === "success") {
+                addFridge({ id: response.data.id, name: fridgeName });
+                setFridgeName("");
+                onRequestClose();
+            } else {
+                setError("냉장고 추가에 실패했습니다.");
+            }
+        } catch (error) {
+            console.error("요청 중 오류 발생:", error);
+            if (error.response) {
+                console.error("서버 오류:", error.response.data); // 서버에서 반환된 오류 메시지 출력
+                setError(
+                    `서버 오류: ${
+                        error.response.data.message || "알 수 없는 오류"
+                    }`
+                );
+            } else {
+                setError("서버와의 통신 중 오류가 발생했습니다.");
+            }
         }
     };
 
@@ -123,6 +158,7 @@ const AddFridgeModal = ({ isOpen, onRequestClose, addFridge }) => {
                         onChange={(e) => setFridgeName(e.target.value)}
                     />
                 </InputContainer>
+                {error && <Error>{error}</Error>}
                 <AddButton onClick={handleAddFridge}>
                     <AddImg src={IconAdd} />
                     <AddText>등록</AddText>

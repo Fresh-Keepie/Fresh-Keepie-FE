@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import LoginIcon from "../assets/images/loginbutton.svg";
 import axios from "axios";
 
+
+
 const Layout = styled.div`
     display: flex;
     flex-direction: column;
@@ -53,7 +55,7 @@ const LinkContainer = styled.div`
 const StyledLink = styled(Link)`
     font-size: 18px;
     color: black;
-    font-family: "Ownglyph meetme";
+    font-family: "Ownglyph-meetme";
     font-weight: 400px;
     text-decoration: none;
 `;
@@ -83,7 +85,7 @@ const ButtonText = styled.span`
     ); /* 텍스트를 수평 및 수직 중앙으로 이동시킵니다. */
     color: white; /* 텍스트 색상 설정 */
     font-size: 20px;
-    font-family: "Potta One";
+    font-family: "PottaOne";
     font-weight: 400px;
 `;
 const Error = styled.div`
@@ -92,47 +94,52 @@ const Error = styled.div`
 `;
 
 const Login = () => {
-    const [identifier, setIdentifier] = useState("");
-    const [password, setPassword] = useState("");
-    const [identifierError, setIdentifierError] = useState("");
-    const [passwordError, setPasswordError] = useState("");
-
-    const navigate = useNavigate();
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
+  const [identifierError, setIdentifierError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
 
-        try {
-            const response = await axios.post(
-                "http://fresh-keepie-env.eba-kygb2spd.ap-northeast-2.elasticbeanstalk.com/user/login",
-                {
-                    userId: identifier,
-                    password: password,
-                }
-            );
+    try {
+      const response = await axios.post('http://13.125.120.108:8080/user/login', {
+        userId: identifier,
+        password: password,
+      });
+      console.log('서버 응답:', response.data); // 서버 응답 데이터 전체를 콘솔에 출력
 
-            if (response.data === "사용자 로그인 성공") {
-                navigate("/home");
-                console.log("로그인 성공");
-            } else {
-                if (response.data === "유효하지 않은 폼 데이터입니다") {
-                    setIdentifierError("아이디 또는 비밀번호를 기입해주세요.");
-                    setPasswordError("");
-                } else if (
-                    response.data === "로그인 실패: Invalid userId or password"
-                ) {
-                    setIdentifierError(
-                        "아이디가 틀렸습니다. 다시 한 번 입력해주세요."
-                    );
-                    setPasswordError("비밀번호가 일치하지 않습니다.");
-                }
-            }
-        } catch (error) {
-            console.log(error);
-            setIdentifierError("로그인 요청 중 오류가 발생했습니다.");
-            setPasswordError("");
-        }
-    };
+      if (response.data === '사용자 로그인 성공') {
+        const userData = { userId: identifier,  user_id: response.data.user_id }; // 서버에서 실제 사용자 정보를 받아오면 여기에 추가
+        localStorage.setItem('user', JSON.stringify(userData));
+        console.log(userData);
+        navigate('/home2');
+      } else {
+        handleErrorResponse(response.data);
+      }
+    } catch (error) {
+      if (error.response) {
+        handleErrorResponse(error.response.data);
+      } else {
+        setIdentifierError('로그인 요청 중 오류가 발생했습니다.');
+        setPasswordError('');
+      }
+    }
+  };
+
+  const handleErrorResponse = (data) => {
+    if (data === '로그인 실패: Invalid userId or password') {
+      setIdentifierError('아이디 또는 비밀번호가 틀렸습니다.');
+      setPasswordError('');
+    } else if (data === '유효하지 않은 폼 데이터입니다') {
+      setIdentifierError('아이디와 비밀번호를 모두 입력해주세요.');
+      setPasswordError('');
+    } else {
+      setIdentifierError('로그인 실패: 알 수 없는 오류가 발생했습니다.');
+      setPasswordError('');
+    }
+  };
 
     return (
         <Layout>

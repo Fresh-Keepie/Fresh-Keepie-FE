@@ -6,7 +6,9 @@ import styled from "styled-components";
 import Topbar from "../components/Topbar";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import { useUserName } from "./myPage";
-import { fetchData } from "../utils/axios";
+import { useFetchBoardList, useFetchPostDetail } from "../utils/axios";
+import axios from "axios";
+export const API_URL = "http://13.125.120.108:8080/";
 const PageWrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -53,8 +55,7 @@ const DefaultButton = styled.div`
 function Community() {
     const { userName } = useUserName();
     const navigate = useNavigate();
-    const [board, setBoard] = useState("자유 게시판");
-    const [temp, setTemp] = useState("Temp");
+    const [board, setBoard] = useState("free");
     const [liked, setLiked] = useState(false);
     const [scraped, setScraped] = useState(false);
     function changeBoard(prop) {
@@ -62,25 +63,11 @@ function Community() {
         navigate("/community");
     }
     //각 게시판 임시 게시글 데이터
-    const freeDummys = Array.from({ length: 100 }).map((_, index, arr) => ({
-        id: arr.length - index,
-        title: `자유 게시판 게시글 ${arr.length - index}`,
-        comments: 3,
-        date: "2024.05.13",
-    }));
-    const recipeDummys = Array.from({ length: 200 }).map((_, index, arr) => ({
-        id: arr.length - index + 100,
-        title: `레시피 게시판 게시글 ${arr.length - index}`,
-        comments: 4,
-        date: "2024.05.13",
-    }));
-    const shareDummys = Array.from({ length: 300 }).map((_, index, arr) => ({
-        id: arr.length - index + 300,
-        title: `나눔 게시판 게시글 ${arr.length - index}`,
-        comments: 7,
-        date: "2024.05.13",
-    }));
-    const POSTS_PER_PAGE = 15;
+
+    const freePostList = useFetchBoardList("free");
+    const recipePostList = useFetchBoardList("recipe");
+    const sharePostList = useFetchBoardList("share");
+    const POSTS_PER_PAGE = 12;
     return (
         <div>
             <PageWrapper>
@@ -157,23 +144,21 @@ function Community() {
         const [content, setContent] = useState("");
 
         // 폼 제출 핸들러
-        const handleSubmit = (event) => {
-            fetchData("/board/free/list");
+        const HandleSubmit = async (event) => {
             event.preventDefault();
-            if (title === "" && content === "") {
-                alert("제목과 내용을 입력해주세요.");
-            } else if (title === "") {
-                alert("제목을 입력해주세요.");
-            } else if (content === "") {
-                alert("내용을 입력해주세요.");
-            } else {
-                //여기에 post API 추가
-                console.log({ postBoard, title, content });
-                alert(board + "에 게시글이 등록되었습니다.");
-                navigate("/community");
-                setTemp(content.target.value);
-            }
+            await axios.post(
+                API_URL + "board/" + board + "/post",
+                {
+                    title: title,
+                    content: content,
+                    userId: "hello",
+                },
+                {}
+            );
+            alert("게시글이 등록되었습니다.");
+            navigate("/community");
         };
+
         const inputStyle = {
             fontFamily: "APPLESDGOTHICNEO",
             border: "1.5px solid",
@@ -198,7 +183,7 @@ function Community() {
                     width: "45%",
                 }}>
                 <div style={{ fontSize: 25, fontWeight: 600 }}>게시글 작성</div>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={HandleSubmit}>
                     <div
                         style={{
                             display: "flex",
@@ -219,11 +204,9 @@ function Community() {
                             <PostBoardSelect
                                 value={postBoard}
                                 onChange={(e) => setPostBoard(e.target.value)}>
-                                <option value="자유 게시판">자유 게시판</option>
-                                <option value="레시피 게시판">
-                                    레시피 게시판
-                                </option>
-                                <option value="나눔 게시판">나눔 게시판</option>
+                                <option value="free">자유 게시판</option>
+                                <option value="recipe">레시피 게시판</option>
+                                <option value="share">나눔 게시판</option>
                             </PostBoardSelect>
 
                             <input
@@ -235,10 +218,12 @@ function Community() {
                             />
                         </div>
                         <textarea
-                            content={content}
-                            onChange={setContent}
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
                             style={{
                                 ...inputStyle,
+                                verticalAlign: "top",
+                                textAlign: "start",
                                 height: 450,
                                 width: "99%",
                                 resize: "none",
@@ -271,9 +256,14 @@ function Community() {
     function PostView() {
         const { postID } = useParams();
         const [commentContent, setCommentContent] = useState("");
-        const postData = DummyPostDetail(postID);
-        const LikeIcon = postData.postDTO.liked ? FaHeart : FaRegHeart;
-        const ScrapIcon = postData.postDTO.scraped ? FaBookmark : FaRegBookmark;
+        const postData = useFetchPostDetail("free", postID);
+        let commentList;
+        if (postData.commentDtoList) {
+            commentList = postData.commentDtoList.slice().reverse();
+        }
+
+        const LikeIcon = postData.likeCheck ? FaHeart : FaRegHeart;
+        const ScrapIcon = postData.scrapCheck ? FaBookmark : FaRegBookmark;
         const inputStyle = {
             fontFamily: "APPLESDGOTHICNEO",
             border: "1.5px solid",
@@ -349,15 +339,16 @@ function Community() {
             padding-right: 25px;
         `;
         const CommentInputContainer = styled.div``;
-        const handleCommentSubmit = (event) => {
+        const handleCommentSubmit = async (event) => {
             event.preventDefault();
-            if (commentContent === "") {
-                alert(" 댓글 내용을 입력해주세요.");
-            } else {
-                //여기에 post API 추가
-                console.log({ commentContent });
-                alert("댓글이 등록되었습니다.");
-            }
+            await axios.post(
+                API_URL + "board/" + board + "/comment/" + postID,
+                {
+                    content: commentContent,
+                },
+                { params: { userId: "hello" } }
+            );
+            alert("댓글이 등록되었습니다.");
         };
         return (
             <div
@@ -380,38 +371,38 @@ function Community() {
                                 paddingLeft: 25,
                             }}>
                             <div style={{ fontSize: 15, fontWeight: 600 }}>
-                                {postData.postDTO.board}
+                                {postData.board}
                             </div>
                             <div style={{ fontSize: 30, fontWeight: 600 }}>
-                                {postData.postDTO.title}
+                                {postData.title}
                             </div>
                         </div>
                         <HeaderInfo>
                             <HeaderInfoContent
                                 width={"20%"}
                                 style={{ fontWeight: 600 }}>
-                                {postData.postDTO.memberID}
+                                {postData.nickname}
                             </HeaderInfoContent>
 
                             <HeaderInfoContent>
-                                {postData.postDTO.postDate}
+                                {postData.postDate}
                                 <div style={{ marginLeft: 12 }} />
                                 {"댓글 : "}
-                                {postData.postDTO.commentCount}
+                                {postData.commentCnt}
                                 <div style={{ marginLeft: 12 }} />
                                 {"조회수 : "}
-                                {postData.postDTO.viewCount}
+                                {postData.view}
                             </HeaderInfoContent>
                         </HeaderInfo>
                     </PostHeader>
                     <PostBody>
-                        <div>{postData.postDTO.content}</div>
+                        <div>{postData.content}</div>
                     </PostBody>
                 </PostContainer>
 
                 <CommentContainer>
                     <CommentHeader>
-                        댓글 {postData.postDTO.commentCount}
+                        댓글 {postData.commentCnt}
                         <ReactionContainer>
                             <div
                                 style={{
@@ -422,42 +413,48 @@ function Community() {
                                 <LikeIcon
                                     size={30}
                                     color={"#05796b"}
-                                    onClick={handleLike}
+                                    onClick={() => {
+                                        HandleLike(postID);
+                                    }}
                                     style={{ cursor: "pointer" }}
                                 />
-                                {postData.postDTO.likeCount}
+                                {postData.likeCnt}
                             </div>
                             <div style={{ marginLeft: 7 }} />
                             <ScrapIcon
                                 size={30}
                                 color={"#05796b"}
-                                onClick={handleScrap}
+                                onClick={() => {
+                                    HandleScrap(postID);
+                                }}
                                 style={{ cursor: "pointer" }}
                             />
                         </ReactionContainer>
                     </CommentHeader>
-                    {postData.postDTO.commentList.map((prop) => (
-                        <CommentBody>
-                            <div
-                                style={{
-                                    width: "100%",
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                }}>
+
+                    {postData.commentDtoList &&
+                        commentList.map((prop) => (
+                            <CommentBody>
                                 <div
                                     style={{
-                                        fontSize: 17,
-                                        fontWeight: 600,
+                                        width: "100%",
+                                        display: "flex",
+                                        justifyContent: "space-between",
                                     }}>
-                                    {prop.commentID}
+                                    <div
+                                        style={{
+                                            fontSize: 17,
+                                            fontWeight: 600,
+                                        }}>
+                                        {prop.nickname}
+                                    </div>
+                                    <div>{prop.createdAt.split("T")[0]} </div>
                                 </div>
-                                <div>{prop.commentDate} </div>
-                            </div>
-                            <div style={{ marginTop: 5 }}>
-                                {prop.commentContent}
-                            </div>
-                        </CommentBody>
-                    ))}
+                                <div style={{ marginTop: 5 }}>
+                                    {prop.content}
+                                </div>
+                            </CommentBody>
+                        ))}
                 </CommentContainer>
                 <CommentInputContainer></CommentInputContainer>
                 <form
@@ -505,46 +502,53 @@ function Community() {
                 </form>
             </div>
         );
-        function handleLike() {
+
+        async function HandleLike(postID) {
+            if (!liked) {
+                const res = await axios.post(
+                    API_URL + "board/free/like/" + postID,
+                    {},
+                    {
+                        params: {
+                            userId: "hello",
+                        },
+                    }
+                );
+                console.log(res);
+            } else {
+                const res = await axios.delete(
+                    API_URL + "board/free/like/" + postID,
+                    {
+                        params: {
+                            userId: "hello",
+                        },
+                    }
+                );
+                console.log(res);
+            }
             setLiked(!liked);
         }
-        function handleScrap() {
+        async function HandleScrap(postID) {
+            if (!scraped) {
+                const res = await axios.post(
+                    API_URL + "board/free/save/" + postID,
+                    {},
+                    {
+                        params: {
+                            userId: "hello",
+                        },
+                    }
+                );
+                console.log(res);
+            } else {
+                await axios.delete(`${API_URL}board/free/save/${postID}`, {
+                    params: {
+                        userId: "hello",
+                    },
+                });
+            }
             setScraped(!scraped);
         }
-    }
-    function DummyPostDetail(postID) {
-        const dummyPost = {
-            postDTO: {
-                board: board,
-                title: postID + "번 게시글",
-                memberID: "Team 마숭숭",
-                content: temp,
-                commentCount: 3,
-                viewCount: 10,
-                liked: liked,
-                likeCount: 2,
-                scraped: scraped,
-                postDate: "2024.05.13",
-                commentList: [
-                    {
-                        commentID: "작성자 1",
-                        commentContent: "댓글 내용 1",
-                        commentDate: "2024.05.13",
-                    },
-                    {
-                        commentID: "작성자 2",
-                        commentContent: "댓글 내용 2",
-                        commentDate: "2024.05.13",
-                    },
-                    {
-                        commentID: "작성자 3",
-                        commentContent: "댓글 내용 3",
-                        commentDate: "2024.05.13",
-                    },
-                ],
-            },
-        };
-        return dummyPost;
     }
 
     function WriteButton() {
@@ -565,21 +569,21 @@ function Community() {
                 <BoardContent>
                     <BoardButton
                         onClick={() => {
-                            changeBoard("자유 게시판");
+                            changeBoard("free");
                         }}>
                         <Board>자유 게시판</Board>
                     </BoardButton>
                     <BoarderLine1 />
                     <BoardButton
                         onClick={() => {
-                            changeBoard("레시피 게시판");
+                            changeBoard("recipe");
                         }}>
                         <Board>레시피 게시판</Board>
                     </BoardButton>
                     <BoarderLine1 />
                     <BoardButton
                         onClick={() => {
-                            changeBoard("나눔 게시판");
+                            changeBoard("share");
                         }}>
                         <Board>나눔 게시판</Board>
                     </BoardButton>
@@ -613,30 +617,30 @@ function Community() {
         // 현재 페이지에서 첫 번째 포스트의 인덱스 계산
         const indexOfFirstPost = indexOfLastPost - POSTS_PER_PAGE;
 
-        // freeDummys 배열에서 현재 페이지에 해당하는 포스트만 추출
+        // freePostList 배열에서 현재 페이지에 해당하는 포스트만 추출
         let currentPosts, currentBoard;
 
         switch (board) {
-            case "자유 게시판":
-                currentPosts = freeDummys.slice(
+            case "free":
+                currentPosts = freePostList.slice(
                     indexOfFirstPost,
                     indexOfLastPost
                 );
-                currentBoard = freeDummys;
+                currentBoard = freePostList;
                 break;
-            case "레시피 게시판":
-                currentPosts = recipeDummys.slice(
+            case "recipe":
+                currentPosts = recipePostList.slice(
                     indexOfFirstPost,
                     indexOfLastPost
                 );
-                currentBoard = recipeDummys;
+                currentBoard = recipePostList;
                 break;
-            case "나눔 게시판":
-                currentPosts = shareDummys.slice(
+            case "share":
+                currentPosts = sharePostList.slice(
                     indexOfFirstPost,
                     indexOfLastPost
                 );
-                currentBoard = shareDummys;
+                currentBoard = sharePostList;
                 break;
             default:
                 console.log("Invalid board value");
@@ -695,7 +699,17 @@ function Community() {
             <>
                 <BoardFrame>
                     <div style={{ display: "flex", width: "100%" }}>
-                        <BoardName>{board}</BoardName>
+                        <BoardName>
+                            <BoardName>
+                                {board === "free"
+                                    ? "자유 게시판"
+                                    : board === "recipe"
+                                    ? "레시피 게시판"
+                                    : board === "share"
+                                    ? "나눔 게시판"
+                                    : "알 수 없는 게시판"}
+                            </BoardName>
+                        </BoardName>
                         <SearchFrame />
                     </div>
                     <BoardHeader>
@@ -739,7 +753,7 @@ function Community() {
                                             fontWeight: 600,
                                             color: "#05796b",
                                         }}>
-                                        [{post.comments}]
+                                        [{post.commentCnt}]
                                     </div>
                                 </BodyContent>
                                 <BodyContent
@@ -748,7 +762,7 @@ function Community() {
                                         overflow: "hidden",
                                         whiteSpace: "nowrap",
                                     }}>
-                                    {post.date}
+                                    {post.createdAt.split("T")[0]}
                                 </BodyContent>
                             </>
                         </BoardBody>
