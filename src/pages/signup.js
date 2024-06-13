@@ -95,14 +95,14 @@ const Signup = () => {
   const [isRegistered, setIsRegistered] = useState(false);
 
   const navigate = useNavigate();
-
   const handleSignup = async (e) => {
     e.preventDefault();
+    
     if (password !== confirmPassword) {
       setError('비밀번호가 일치하지 않습니다.');
       return;
     }
-
+  
     try {
       const response = await axios.post('http://13.125.120.108:8080/user/signup', {
         userId: identifier,
@@ -112,9 +112,9 @@ const Signup = () => {
         birth: birthday ? birthday.toISOString().split('T')[0] : '',
         email,
       });
-
-      console.log('Response data:',response.data); // 응답 데이터를 콘솔에 출력
-
+  
+      console.log('Response data:', response.data);
+  
       if (response.data === 'User registered successfully') {
         setIsRegistered(true);
         navigate('/login');
@@ -143,52 +143,7 @@ const Signup = () => {
       }
     }
   };
-
-        try {
-            const response = await axios.post(
-                "http://fresh-keepie-env.eba-kygb2spd.ap-northeast-2.elasticbeanstalk.com/user/signup",
-                {
-                    userId: identifier,
-                    password,
-                    password2: confirmPassword,
-                    nickname,
-                    birth: birthday ? birthday.toISOString().split("T")[0] : "",
-                    email,
-                }
-            );
-
-            console.log(response.data); // 응답 데이터를 콘솔에 출력
-
-            if (response.data === "User registered successfully") {
-                if (!isRegistered) setIsRegistered(true);
-                navigate("/login");
-                console.log("회원가입 성공");
-            } else {
-                setError("회원가입 중 오류가 발생했습니다.");
-            }
-        } catch (error) {
-            if (error.response) {
-                const responseError = error.response.data;
-                if (responseError === "Invalid form data") {
-                    setError("모든 정보를 입력해주세요.");
-                } else if (responseError.includes("User already exists:")) {
-                    if (responseError.includes("Username already exists")) {
-                        setError("이미 존재하는 아이디입니다.");
-                    } else if (
-                        responseError.includes("Nickname already exists")
-                    ) {
-                        setError("이미 존재하는 닉네임입니다.");
-                    } else if (responseError.includes("Email already exists")) {
-                        setError("이미 존재하는 이메일입니다.");
-                    }
-                } else {
-                    setError("회원가입 중 오류가 발생했습니다.");
-                }
-            } else {
-                setError("회원가입 중 오류가 발생했습니다.");
-            }
-        }
-    };
+  
 
     return (
         <Layout>
